@@ -1,0 +1,513 @@
+﻿@model List<Nhom06_QuanLyBanSah.Models.GioHang>
+@{
+    ViewBag.Title = "Giỏ Hàng";
+    Layout = "~/Views/Shared/_LayoutPage1.cshtml";
+    var voucherApDung = Session["VoucherApDung"] as Nhom06_QuanLyBanSah.Models.VOUCHER;
+    decimal soTienGiam = Session["SoTienGiam"] != null ? (decimal)Session["SoTienGiam"] : 0;
+}
+
+<style>
+    /* Modal Voucher */
+    .voucher-modal {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0,0,0,0.7);
+        z-index: 9999;
+        animation: fadeIn 0.3s;
+    }
+
+    @@keyframes fadeIn {
+        from {
+            opacity: 0;
+        }
+
+        to {
+            opacity: 1;
+        }
+    }
+
+    .voucher-modal-content {
+        position: relative;
+        background: white;
+        width: 90%;
+        max-width: 600px;
+        margin: 50px auto;
+        border-radius: 20px;
+        box-shadow: 0 10px 50px rgba(0,0,0,0.3);
+        animation: slideDown 0.3s;
+        max-height: 85vh;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+    }
+
+    @@keyframes slideDown {
+        from {
+            transform: translateY(-50px);
+            opacity: 0;
+        }
+
+        to {
+            transform: translateY(0);
+            opacity: 1;
+        }
+    }
+
+    .voucher-modal-header {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 20px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .voucher-modal-close {
+        background: rgba(255,255,255,0.2);
+        border: none;
+        color: white;
+        width: 35px;
+        height: 35px;
+        border-radius: 50%;
+        cursor: pointer;
+        font-size: 20px;
+    }
+
+    .voucher-tabs {
+        display: flex;
+        background: #f8f9fa;
+        padding: 10px 20px;
+        border-bottom: 2px solid #e9ecef;
+    }
+
+    .voucher-tab {
+        padding: 10px 20px;
+        background: none;
+        border: none;
+        cursor: pointer;
+        font-weight: 600;
+        color: #6c757d;
+        border-bottom: 3px solid transparent;
+        transition: all 0.3s;
+    }
+
+        .voucher-tab.active {
+            color: #667eea;
+            border-bottom-color: #667eea;
+        }
+
+    .voucher-modal-body {
+        padding: 20px;
+        overflow-y: auto;
+        flex: 1;
+    }
+
+    .voucher-item {
+        border: 2px solid #e9ecef;
+        border-radius: 15px;
+        padding: 15px;
+        margin-bottom: 15px;
+        display: flex;
+        gap: 15px;
+        transition: all 0.3s;
+        cursor: pointer;
+    }
+
+        .voucher-item:hover {
+            border-color: #667eea;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.2);
+        }
+
+    .voucher-icon {
+        width: 60px;
+        height: 60px;
+        background: linear-gradient(135deg, #ffd89b 0%, #ff9a56 100%);
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 30px;
+        color: white;
+        flex-shrink: 0;
+    }
+
+    .voucher-info {
+        flex: 1;
+    }
+
+    .voucher-title {
+        font-weight: 700;
+        font-size: 16px;
+        color: #2c3e50;
+        margin-bottom: 5px;
+    }
+
+    .voucher-desc {
+        font-size: 13px;
+        color: #7f8c8d;
+        margin-bottom: 8px;
+    }
+
+    .voucher-expire {
+        font-size: 12px;
+        color: #3498db;
+    }
+
+    .voucher-btn {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border: none;
+        padding: 8px 20px;
+        border-radius: 20px;
+        cursor: pointer;
+        font-weight: 600;
+        align-self: center;
+    }
+
+    .voucher-applied {
+        background: #28a745 !important;
+    }
+
+    /* Cart Styles */
+    .cart-voucher-box {
+        background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        border-radius: 15px;
+        padding: 20px;
+        color: white;
+        cursor: pointer;
+        transition: all 0.3s;
+        margin-bottom: 20px;
+    }
+
+        .cart-voucher-box:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(245, 87, 108, 0.3);
+        }
+
+    .voucher-badge {
+        background: rgba(255,255,255,0.3);
+        padding: 5px 15px;
+        border-radius: 20px;
+        display: inline-block;
+        font-size: 13px;
+        margin-top: 10px;
+    }
+</style>
+
+<div class="container my-5">
+    <h2 class="text-primary mb-4">
+        <i class="fas fa-shopping-cart me-2"></i>GIỎ HÀNG CỦA BẠN
+    </h2>
+
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show">
+            <i class="fas fa-check-circle me-2"></i>@TempData["Success"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    @if (Model == null || !Model.Any())
+    {
+        <div class="card border-0 shadow-lg">
+            <div class="card-body text-center py-5">
+                <div class="mb-4">
+                    <i class="fas fa-shopping-cart text-muted" style="font-size: 100px;"></i>
+                </div>
+                <h3 class="text-muted mb-3">Giỏ hàng của bạn đang trống</h3>
+                <p class="text-secondary mb-4">
+                    Hãy khám phá các sản phẩm tuyệt vời của chúng tôi!
+                </p>
+                <a href="@Url.Action("SanPham", "Home")" class="btn btn-primary btn-lg px-5">
+                    <i class="fas fa-arrow-left me-2"></i>Quay về trang sản phẩm
+                </a>
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="row">
+            <div class="col-lg-8">
+                <!-- Voucher Box -->
+                <div class="cart-voucher-box" onclick="openVoucherModal()">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h5 class="mb-1">
+                                <i class="fas fa-gift me-2"></i>Ưu Đãi Liên Quan
+                            </h5>
+                            <p class="mb-0 small opacity-90">
+                                @if (voucherApDung != null)
+                                {
+                                    <span>Đã áp dụng: <strong>@voucherApDung.CodeVoucher</strong></span>
+                                }
+                                else
+                                {
+                                    <span>Nhấn để xem các mã giảm giá</span>
+                                }
+                            </p>
+                        </div>
+                        <i class="fas fa-chevron-right fa-2x"></i>
+                    </div>
+                    @if (voucherApDung != null)
+                    {
+                        <div class="voucher-badge">
+                            Tiết kiệm @string.Format("{0:N0}₫", soTienGiam)
+                        </div>
+                    }
+                </div>
+
+                <!-- Danh sách sản phẩm -->
+                <div class="card border-0 shadow-lg">
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table class="table table-hover align-middle mb-0">
+                                <thead class="table-primary">
+                                    <tr>
+                                        <th style="width: 15%;">Ảnh</th>
+                                        <th style="width: 30%;">Tên Sách</th>
+                                        <th class="text-center" style="width: 15%;">Số Lượng</th>
+                                        <th class="text-end" style="width: 15%;">Đơn Giá</th>
+                                        <th class="text-end" style="width: 20%;">Thành Tiền</th>
+                                        <th class="text-center" style="width: 5%;"></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var item in Model)
+                                    {
+                                        <tr>
+                                            <td class="text-center">
+                                                <img src="~/HinhSP/@item.sAnhBia"
+                                                     alt="@item.sTenSach"
+                                                     class="img-thumbnail"
+                                                     style="width: 60px; height: 80px; object-fit: cover;" />
+                                            </td>
+                                            <td>
+                                                <strong class="text-primary">@item.sTenSach</strong>
+                                            </td>
+                                            @using (Html.BeginForm("CapNhatGioHang", "Home", new { MaSP = item.iMaSach }, FormMethod.Post))
+                                            {
+                                                <td class="text-center">
+                                                    <div class="input-group input-group-sm" style="width: 120px; margin: auto;">
+                                                        <input type="number"
+                                                               min="1"
+                                                               max="99"
+                                                               name="txtSoLuong"
+                                                               value="@item.iSoLuong"
+                                                               class="form-control text-center" />
+                                                        <button type="submit" class="btn btn-outline-primary" title="Cập nhật">
+                                                            <i class="fas fa-sync-alt"></i>
+                                                        </button>
+                                                    </div>
+                                                </td>
+                                            }
+                                            <td class="text-end">
+                                                <span class="fw-semibold text-success">
+                                                    @string.Format("{0:N0}₫", item.dDonGia)
+                                                </span>
+                                            </td>
+                                            <td class="text-end">
+                                                <span class="fw-bold text-danger">
+                                                    @string.Format("{0:N0}₫", item.ThanhTien)
+                                                </span>
+                                            </td>
+                                            <td class="text-center">
+                                                <a href="@Url.Action("XoaGioHang", "Home", new { MaSP = item.iMaSach })"
+                                                   class="btn btn-sm btn-danger"
+                                                   onclick="return confirm('Xóa sản phẩm này?')">
+                                                    <i class="fas fa-trash"></i>
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tổng tiền -->
+            <div class="col-lg-4">
+                <div class="card border-0 shadow-lg">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="mb-0"><i class="fas fa-receipt me-2"></i>Thông Tin Đơn Hàng</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between mb-2">
+                            <span>Tạm tính:</span>
+                            <strong>@string.Format("{0:N0}₫", ViewBag.TongThanhTien)</strong>
+                        </div>
+                        @if (soTienGiam > 0)
+                        {
+                            <div class="d-flex justify-content-between mb-2 text-success">
+                                <span><i class="fas fa-tag me-1"></i>Giảm giá:</span>
+                                <strong>-@string.Format("{0:N0}₫", soTienGiam)</strong>
+                            </div>
+                        }
+                        <hr />
+                        <div class="d-flex justify-content-between">
+                            <h5>Tổng cộng:</h5>
+                            <h5 class="text-danger">
+                                @string.Format("{0:N0}₫", Convert.ToDecimal(ViewBag.TongThanhTien) - soTienGiam)
+                            </h5>
+                        </div>
+
+                        <a href="@Url.Action("DatHang", "Home")"
+                           class="btn btn-primary w-100 mt-3 btn-lg">
+                            <i class="fas fa-shopping-bag me-2"></i>Tiến Hành Đặt Hàng
+                        </a>
+
+                        <div class="mt-3 text-center">
+                            <small class="text-muted">
+                                <i class="fas fa-shield-alt me-1"></i>
+                                Thanh toán an toàn & bảo mật
+                            </small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+<!-- Modal Voucher -->
+<div id="voucherModal" class="voucher-modal">
+    <div class="voucher-modal-content">
+        <div class="voucher-modal-header">
+            <div>
+                <h4 class="mb-0"><i class="fas fa-ticket-alt me-2"></i>ƯU ĐÃI LIÊN QUAN</h4>
+                <small class="opacity-90">Áp dụng tối đa 1 lần</small>
+            </div>
+            <button class="voucher-modal-close" onclick="closeVoucherModal()">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+
+        <div class="voucher-tabs">
+            <button class="voucher-tab active" onclick="switchTab('discount')">
+                Mã giảm giá
+            </button>
+            <button class="voucher-tab" onclick="switchTab('shipping')">
+                Mã vận chuyển
+            </button>
+        </div>
+
+        <div class="voucher-modal-body" id="voucherList">
+            <div class="text-center py-5">
+                <div class="spinner-border text-primary" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+                <p class="mt-2 text-muted">Đang tải voucher...</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    let currentVoucher = @Html.Raw(voucherApDung != null ? "'" + voucherApDung.CodeVoucher + "'" : "null");
+
+    function openVoucherModal() {
+        document.getElementById('voucherModal').style.display = 'block';
+        loadVouchers();
+    }
+
+    function closeVoucherModal() {
+        document.getElementById('voucherModal').style.display = 'none';
+    }
+
+    function switchTab(tab) {
+        document.querySelectorAll('.voucher-tab').forEach(t => t.classList.remove('active'));
+        event.target.classList.add('active');
+        loadVouchers(tab);
+    }
+
+    function loadVouchers(type = 'discount') {
+        const voucherList = document.getElementById('voucherList');
+
+        // Giả lập data voucher (trong thực tế sẽ gọi API)
+        const vouchers = type === 'discount' ? [
+            {
+                code: 'GIAM10K',
+                title: 'Mã Giảm 10K - Toàn Sàn',
+                desc: 'Đơn hàng từ 130k - Không bao gồm giá trị của các sản phẩm sau Manga, Ngoại Văn...',
+                expire: 'HSD: 31/12/2025',
+                icon: '%'
+            },
+            {
+                code: 'GIAM20K',
+                title: 'Mã Giảm 20K - Toàn Sàn',
+                desc: 'Đơn hàng từ 249k - Không bao gồm giá trí của các sản phẩm sau Manga, Ngoại Văn...',
+                expire: 'HSD: 31/12/2025',
+                icon: '%'
+            },
+            {
+                code: 'GIAM50K',
+                title: 'Mã Giảm 50K - Toàn Sàn',
+                desc: 'Đơn hàng từ 500k - Áp dụng cho tất cả sản phẩm',
+                expire: 'HSD: 31/12/2025',
+                icon: '%'
+            }
+        ] : [
+            {
+                code: 'FREESHIP',
+                title: 'Miễn Phí Vận Chuyển',
+                desc: 'Áp dụng cho đơn hàng từ 100k trở lên',
+                expire: 'HSD: 31/12/2025',
+                icon: '🚚'
+            }
+        ];
+
+        let html = '';
+        vouchers.forEach(v => {
+            const isApplied = currentVoucher === v.code;
+            html += `
+                <div class="voucher-item" onclick="applyVoucher('${v.code}')">
+                    <div class="voucher-icon">${v.icon}</div>
+                    <div class="voucher-info">
+                        <div class="voucher-title">${v.title}</div>
+                        <div class="voucher-desc">${v.desc}</div>
+                        <div class="voucher-expire">${v.expire}</div>
+                    </div>
+                    <button class="voucher-btn ${isApplied ? 'voucher-applied' : ''}"
+                            onclick="event.stopPropagation(); applyVoucher('${v.code}')">
+                        ${isApplied ? 'Đã áp dụng' : 'Áp dụng'}
+                    </button>
+                </div>
+            `;
+        });
+
+        voucherList.innerHTML = html;
+    }
+
+    function applyVoucher(code) {
+        $.ajax({
+            url: '@Url.Action("ApDungVoucher", "Home")',
+            type: 'POST',
+            data: { codeVoucher: code },
+            success: function (response) {
+                if (response.success) {
+                    alert('Áp dụng voucher thành công!');
+                    location.reload();
+                } else {
+                    alert(response.message);
+                }
+            },
+            error: function () {
+                alert('Có lỗi xảy ra!');
+            }
+        });
+    }
+
+    // Close modal khi click outside
+    window.onclick = function(event) {
+        const modal = document.getElementById('voucherModal');
+        if (event.target == modal) {
+            closeVoucherModal();
+        }
+    }
+</script>

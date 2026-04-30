@@ -1,0 +1,18 @@
+﻿@using Nhom06_QuanLyBanSah.Models;
+@model List<THELOAI>
+
+<h2 class="fs-5 fw-bold mb-3 border-bottom pb-2 text-primary d-flex align-items-center">
+    <i class="fas fa-list-ul me-2"></i>
+    Danh Mục Sách
+</h2>
+<div class="list-group list-group-flus" style="margin-left:20px">
+    @foreach (var item in Model)
+    {
+        <a href="@Url.Action("SachttheoTL", "Home", new { maTheLoai = item.MaTheLoai })" class="list-group-item list-group-item-action border-0 fw-medium @(Request["maTheLoai"] == item.MaTheLoai.ToString() ? "bg-primary text-white" : "text-dark")">
+            @item.TenTheLoai
+        </a>
+    }
+
+
+</div>
+

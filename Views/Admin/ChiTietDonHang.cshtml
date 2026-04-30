@@ -1,0 +1,228 @@
+﻿@model Nhom06_QuanLyBanSah.Models.DONHANG
+
+@{
+    ViewBag.Title = "Chi Tiết Đơn Hàng";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<div class="container-fluid">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="text-primary fw-bold mb-0">
+            <i class="fas fa-file-invoice me-2"></i>Chi Tiết Đơn Hàng #@Model.MaDonHang
+        </h2>
+        <a href="@Url.Action("QuanLyDonHang", "Admin")" class="btn btn-outline-primary">
+            <i class="fas fa-arrow-left me-2"></i>Quay Lại
+        </a>
+    </div>
+
+    <div class="row">
+        <!-- Thông tin đơn hàng -->
+        <div class="col-lg-8">
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-white">
+                    <h5 class="mb-0 text-primary">Thông Tin Đơn Hàng</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <table class="table table-borderless">
+                                <tr>
+                                    <td class="fw-bold" style="width: 150px;">Mã Đơn Hàng:</td>
+                                    <td><span class="badge bg-primary">#@Model.MaDonHang</span></td>
+                                </tr>
+                                <tr>
+                                    <td class="fw-bold">Ngày Đặt:</td>
+                                    <td>@Model.NgayDatHang</td>
+                                </tr>
+                                <tr>
+                                    <td class="fw-bold">Khách Hàng:</td>
+                                    <td>
+                                        <strong>@Model.TAIKHOAN.HoTen</strong><br />
+                                        <small class="text-muted">@Model.TAIKHOAN.Email</small><br />
+                                        <small class="text-muted">@Model.TAIKHOAN.DienThoai</small>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                        <div class="col-md-6">
+                            <table class="table table-borderless">
+                                <tr>
+                                    <td class="fw-bold" style="width: 150px;">Địa Chỉ Giao:</td>
+                                    <td>@Model.DiaChiGiaoHang</td>
+                                </tr>
+                                <tr>
+                                    <td class="fw-bold">Thanh Toán:</td>
+                                    <td>
+                                        @if (Model.PhuongThucThanhToan == "Thanh toán khi nhận hàng")
+                                        {
+                                            <span class="badge bg-secondary">COD</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-info">@Model.PhuongThucThanhToan</span>
+                                        }
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="fw-bold">Trạng Thái:</td>
+                                    <td>
+                                        <select class="form-select form-select-sm" id="trangThaiSelect" style="max-width: 200px;">
+                                            <option value="Chờ xử lý" @(Model.TinhTrangGiaoHang == "Chờ xử lý" ? "selected" : "")>Chờ xử lý</option>
+                                            <option value="Đã xác nhận" @(Model.TinhTrangGiaoHang == "Đã xác nhận" ? "selected" : "")>Đã xác nhận</option>
+                                            <option value="Đang vận chuyển" @(Model.TinhTrangGiaoHang == "Đang vận chuyển" ? "selected" : "")>Đang vận chuyển</option>
+                                            <option value="Đã giao hàng thành công" @(Model.TinhTrangGiaoHang == "Đã giao hàng thành công" ? "selected" : "")>Đã giao</option>
+                                            <option value="Đã hủy" @(Model.TinhTrangGiaoHang == "Đã hủy" ? "selected" : "")>Đã hủy</option>
+                                        </select>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Chi tiết sản phẩm -->
+            <div class="card shadow-sm">
+                <div class="card-header bg-white">
+                    <h5 class="mb-0 text-primary">Chi Tiết Sản Phẩm</h5>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Hình</th>
+                                    <th>Tên Sách</th>
+                                    <th class="text-center">Số Lượng</th>
+                                    <th class="text-end">Đơn Giá</th>
+                                    <th class="text-end">Thành Tiền</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var ct in Model.CHITIETDONHANG)
+                                {
+                                    <tr>
+                                        <td>
+                                            <img src="~/HinhSP/@ct.SACH.AnhBia" alt="@ct.SACH.TenSach"
+                                                 class="img-thumbnail" style="width: 50px; height: 70px; object-fit: cover;" />
+                                        </td>
+                                        <td>
+                                            <strong>@ct.SACH.TenSach</strong>
+                                        </td>
+                                        <td class="text-center">
+                                            <span class="badge bg-primary">@ct.SoLuong</span>
+                                        </td>
+                                        <td class="text-end">
+                                            @string.Format("{0:N0}", ct.GiaBanTaiThoiDiem) đ
+                                        </td>
+                                        <td class="text-end fw-bold text-danger">
+                                            @string.Format("{0:N0}", ct.SoLuong * ct.GiaBanTaiThoiDiem) đ
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                            <tfoot class="table-light">
+                                <tr>
+                                    <td colspan="4" class="text-end fw-bold">Tổng Cộng:</td>
+                                    <td class="text-end">
+                                        <h5 class="mb-0 text-danger fw-bold">@string.Format("{0:N0}", Model.TongTien) đ</h5>
+                                    </td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Cột phải: Tóm tắt và hành động -->
+        <div class="col-lg-4">
+            <!-- Tóm tắt đơn hàng -->
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-white">
+                    <h5 class="mb-0 text-primary">Tóm Tắt</h5>
+                </div>
+                <div class="card-body">
+                    <div class="d-flex justify-content-between mb-2">
+                        <span>Số lượng sản phẩm:</span>
+                        <strong>@Model.CHITIETDONHANG.Sum(x => x.SoLuong)</strong>
+                    </div>
+                    <div class="d-flex justify-content-between mb-2">
+                        <span>Tổng tiền:</span>
+                        <strong class="text-danger">@string.Format("{0:N0}", Model.TongTien) đ</strong>
+                    </div>
+                    <hr />
+                    <div class="mb-2">
+                        <small class="text-muted">Trạng thái hiện tại:</small>
+                        @switch (Model.TinhTrangGiaoHang)
+                        {
+                            case "Chờ xử lý":
+                                <br /><span class="badge bg-secondary">Chờ xử lý</span>
+                                break;
+                            case "Đã xác nhận":
+                                <br /><span class="badge bg-info">Đã xác nhận</span>
+                                break;
+                            case "Đang vận chuyển":
+                                <br /><span class="badge bg-warning">Đang vận chuyển</span>
+                                break;
+                            case "Đã giao hàng thành công":
+                                <br /><span class="badge bg-success">Đã giao</span>
+                                break;
+                            case "Đã hủy":
+                                <br /><span class="badge bg-danger">Đã hủy</span>
+                                break;
+                        }
+                    </div>
+                </div>
+            </div>
+
+            <!-- Hành động -->
+            <div class="card shadow-sm">
+                <div class="card-header bg-white">
+                    <h5 class="mb-0 text-primary"><i class="fas fa-tools me-2"></i>Thao Tác</h5>
+                </div>
+               
+                <div class="card-body">
+                    <button type="button" class="btn btn-primary w-100 mb-2" id="btnCapNhat">
+                        <i class="fas fa-save me-2"></i>Cập Nhật Trạng Thái
+                    </button>
+                    <button type="button" class="btn btn-outline-primary w-100" onclick="window.print()">
+                        <i class="fas fa-print me-2"></i>In Đơn Hàng
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $('#btnCapNhat').click(function () {
+            var trangThai = $('#trangThaiSelect').val();
+            var maDonHang = @Model.MaDonHang;
+
+            if (confirm('Bạn có chắc muốn cập nhật trạng thái đơn hàng thành "' + trangThai + '"?')) {
+                $.ajax({
+                    url: '@Url.Action("CapNhatTrangThai", "Admin")',
+                    type: 'POST',
+                    data: {
+                        id: maDonHang,
+                        trangThai: trangThai
+                    },
+                    success: function (response) {
+                        if (response.success) {
+                            alert(response.message);
+                            location.reload();
+                        } else {
+                            alert(response.message);
+                        }
+                    },
+                    error: function () {
+                        alert('Có lỗi xảy ra!');
+                    }
+                });
+            }
+        });
+    });
+</script>

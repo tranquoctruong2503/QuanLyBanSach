@@ -1,0 +1,123 @@
+﻿@using Nhom06_QuanLyBanSah.Models
+@model List<SACH>
+@{
+    ViewBag.Title = "Tìm kiếm sách theo thể loại";
+    Layout = "~/Views/Shared/_LayoutPage1.cshtml";
+
+    int page = ViewBag.Page ?? 1;
+    int totalPages = ViewBag.TotalPages ?? 1;
+    string sortOrder = ViewBag.SortOrder as string ?? "az";
+}
+
+
+<h2 class="text-center">Tìm kiếm sách theo thể loại</h2>
+
+<main class="container my-5 flex-grow-1">
+    <div class="row ">
+
+        <!-- Cột trái: DANH MỤC SẢN PHẨM -->
+        @RenderPage("~/Views/Shared/Partial.cshtml")
+
+        <section class="col-lg-9">
+            <div class="d-flex justify-content-between align-items-center mb-4 p-3 bg-white rounded-4 shadow-sm">
+                <p class="text-secondary fw-medium mb-0">
+                    Tìm thấy <span class="text-primary fw-bold">@ViewBag.SLSach</span> sản phẩm
+                </p>
+
+                <!-- ✅ Form sắp xếp -->
+                <form id="sortForm" method="get" action="@Url.Action("SearchSanPham", "Home")" class="d-inline">
+                    <input type="hidden" name="maTheLoai" value="@Request["maTheLoai"]" />
+                    <input type="hidden" name="keyword" value="@Request["keyword"]" />
+
+                    <label for="sort" class="text-secondary me-2">Sắp xếp theo:</label>
+                    <select name="sortOrder" id="sort"
+                            class="form-select d-inline-block w-auto border border-gray-300"
+                            onchange="document.getElementById('sortForm').submit();">
+                        <option value="az" @(ViewBag.SortOrder == "az" ? "selected" : "")>A-Z</option>
+                        <option value="za" @(ViewBag.SortOrder == "za" ? "selected" : "")>Z-A</option>
+                        <option value="priceAsc" @(ViewBag.SortOrder == "priceAsc" ? "selected" : "")>Giá: Thấp đến Cao</option>
+                        <option value="priceDesc" @(ViewBag.SortOrder == "priceDesc" ? "selected" : "")>Giá: Cao đến Thấp</option>
+                    </select>
+                </form>
+
+            </div>
+
+            <!-- ✅ Hiển thị danh sách sách -->
+            <div class="row row-cols-2 row-cols-md-3 row-cols-xl-4 g-4">
+                @foreach (var item in Model)
+                {
+                    <div class="col">
+                        <div class="product-card bg-white p-3 d-flex flex-column justify-content-between h-100">
+                            <div class="flex-grow">
+                                <img src="~/HinhSP/@item.AnhBia" alt="@item.TenSach" class="img-fluid rounded mb-3" />
+                                <span class="badge text-bg-primary bg-opacity-10 text-primary fw-semibold text-uppercase py-1 px-2 mb-2">
+                                    @item.THELOAI.TenTheLoai
+                                </span>
+                                <h3 class="fs-5 fw-bold text-dark mt-2 mb-1 line-clamp-2">@item.TenSach</h3>
+                                <p class="small text-muted mb-2">Tác giả: @item.TACGIA.TenTacGia</p>
+                            </div>
+                            <div class="pt-2 border-top mt-auto">
+                                <p class="fs-4 fw-bold text-danger mb-0">
+                                    @string.Format("{0:N0} VNĐ", item.GiaBan)
+                                </p>
+                                <a href="@Url.Action("ChiTietSanPham", "Home", new { @ms = item.MaSach })"
+                                   class="btn btn-primary w-100 small fw-semibold">
+                                    Xem chi tiết
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+
+            <!-- ✅ PHÂN TRANG -->
+            @if (totalPages > 1)
+            {
+                <nav aria-label="Page navigation" class="mt-4">
+                    <ul class="pagination justify-content-center">
+
+                        @* Nút Previous *@
+                        <li class="page-item @(page <= 1 ? "disabled" : "")">
+                            <a class="page-link"
+                               href="@Url.Action("SearchSanPham", "Home", new {
+       page = page - 1,
+       maTheLoai = Request["maTheLoai"],
+       keyword = Request["keyword"],
+       sortOrder = sortOrder
+   })">«</a>
+
+                        </li>
+
+                        @* Các số trang *@
+                        @for (int i = 1; i <= totalPages; i++)
+                        {
+                            <li class="page-item @(i == page ? "active" : "")">
+                                <a class="page-link"
+                                   href="@Url.Action("SearchSanPham", "Home", new {
+       page = i,
+       maTheLoai = Request["maTheLoai"],
+       keyword = Request["keyword"],
+       sortOrder = sortOrder
+   })">@i</a>
+
+</li>
+}
+
+                        @* Nút Next *@
+                        <li class="page-item @(page >= totalPages ? "disabled" : "")">
+                            <a class="page-link"
+                               href="@Url.Action("SearchSanPham", "Home", new {
+       page = page + 1,
+       maTheLoai = Request["maTheLoai"],
+       keyword = Request["keyword"],
+       sortOrder = sortOrder
+   })">»</a>
+
+                        </li>
+                    </ul>
+                </nav>
+            }
+
+        </section>
+    </div>
+</main>

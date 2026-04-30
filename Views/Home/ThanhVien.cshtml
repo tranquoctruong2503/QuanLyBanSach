@@ -1,0 +1,308 @@
+﻿@{
+    ViewBag.Title = "Thành Viên";
+    Layout = "~/Views/Shared/_LayoutPage1.cshtml";
+    var thanhVien = ViewBag.ThanhVien as Nhom06_QuanLyBanSah.Models.THANHVIEN;
+    var user = Session["TaiKhoan"] as Nhom06_QuanLyBanSah.Models.TAIKHOAN;
+}
+
+<style>
+    .membership-hero {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        padding: 60px 0;
+        color: white;
+        border-radius: 20px;
+        margin-bottom: 30px;
+    }
+
+    .membership-card {
+        background: white;
+        border-radius: 20px;
+        padding: 30px;
+        box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+        margin-bottom: 30px;
+    }
+
+    .tier-card {
+        border: 3px solid #e0e0e0;
+        border-radius: 20px;
+        padding: 30px;
+        text-align: center;
+        transition: all 0.3s;
+        cursor: pointer;
+        height: 100%;
+    }
+
+        .tier-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.15);
+        }
+
+        .tier-card.bronze {
+            border-color: #cd7f32;
+            background: linear-gradient(135deg, #fff9f0 0%, #ffe5cc 100%);
+        }
+
+        .tier-card.silver {
+            border-color: #c0c0c0;
+            background: linear-gradient(135deg, #f5f5f5 0%, #e0e0e0 100%);
+        }
+
+        .tier-card.gold {
+            border-color: #ffd700;
+            background: linear-gradient(135deg, #fffbea 0%, #fff4cc 100%);
+        }
+
+        .tier-card.active {
+            border-width: 5px;
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
+        }
+
+    .tier-icon {
+        font-size: 60px;
+        margin-bottom: 15px;
+    }
+
+    .tier-name {
+        font-size: 24px;
+        font-weight: 700;
+        margin-bottom: 10px;
+    }
+
+    .tier-requirement {
+        font-size: 14px;
+        color: #666;
+        margin-bottom: 20px;
+    }
+
+    .benefits-list {
+        text-align: left;
+        list-style: none;
+        padding: 0;
+    }
+
+        .benefits-list li {
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+        }
+
+            .benefits-list li i {
+                color: #28a745;
+                margin-right: 8px;
+            }
+
+    .progress-container {
+        background: white;
+        border-radius: 15px;
+        padding: 25px;
+        box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+    }
+
+    .custom-progress {
+        height: 25px;
+        border-radius: 15px;
+        background: #e9ecef;
+        overflow: hidden;
+    }
+
+    .custom-progress-bar {
+        height: 100%;
+        background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-weight: 700;
+        transition: width 1s ease;
+    }
+
+    .stat-box {
+        text-align: center;
+        padding: 20px;
+        background: white;
+        border-radius: 15px;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+    }
+
+    .stat-value {
+        font-size: 32px;
+        font-weight: 700;
+        color: #667eea;
+    }
+
+    .stat-label {
+        font-size: 14px;
+        color: #666;
+        margin-top: 5px;
+    }
+</style>
+
+<div class="container my-5">
+    <!-- Hero Section -->
+    <div class="membership-hero">
+        <div class="container text-center">
+            <h1 class="mb-3">
+                <i class="fas fa-crown me-2"></i>
+                CHƯƠNG TRÌNH THÀNH VIÊN
+            </h1>
+            <p class="lead mb-0">Hệ thống hạng thành viên ALPHA BOOK</p>
+            <p class="opacity-90">Mua sắm nhiều hơn - Nhận ưu đãi lớn hơn</p>
+        </div>
+    </div>
+
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show">
+            <i class="fas fa-trophy me-2"></i>@TempData["Success"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    <!-- Thông tin hiện tại -->
+    <div class="membership-card">
+        <div class="row align-items-center">
+            <div class="col-md-3 text-center">
+                <div class="mb-3">
+                    @if (thanhVien.HangThanhVien == "Đồng")
+                    {
+                        <i class="fas fa-medal tier-icon" style="color: #cd7f32;"></i>
+                    }
+                    else if (thanhVien.HangThanhVien == "Bạc")
+                    {
+                        <i class="fas fa-medal tier-icon" style="color: #c0c0c0;"></i>
+                    }
+                    else
+                    {
+                        <i class="fas fa-crown tier-icon" style="color: #ffd700;"></i>
+                    }
+                </div>
+                <h4 class="fw-bold">@user.HoTen</h4>
+                <p class="text-muted mb-0">@user.Email</p>
+            </div>
+
+            <div class="col-md-9">
+                <div class="row g-3">
+                    <div class="col-md-4">
+                        <div class="stat-box">
+                            <div class="stat-value">@thanhVien.HangThanhVien</div>
+                            <div class="stat-label">Hạng Hiện Tại</div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="stat-box">
+                            <div class="stat-value">@string.Format("{0:N0}₫", ViewBag.TongTienDaMua)</div>
+                            <div class="stat-label">Tổng Chi Tiêu</div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="stat-box">
+                            <div class="stat-value">@ViewBag.SoDonHang</div>
+                            <div class="stat-label">Đơn Hàng Hoàn Thành</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        @if (ViewBag.TienCanThiet > 0)
+        {
+            <hr class="my-4" />
+            <div class="progress-container">
+                <div class="d-flex justify-content-between mb-2">
+                    <span class="fw-bold">Tiến độ lên hạng @ViewBag.HangTiepTheo</span>
+                    <span class="text-primary fw-bold">@ViewBag.TienDoNangHang%</span>
+                </div>
+                <div class="custom-progress">
+                    <div class="custom-progress-bar" style="width: @ViewBag.TienDoNangHang%">
+                        @ViewBag.TienDoNangHang%
+                    </div>
+                </div>
+                <div class="text-center mt-3">
+                    <p class="mb-0 text-muted">
+                        Còn thiếu <strong class="text-danger">@string.Format("{0:N0}₫", ViewBag.TienCanThiet)</strong>
+                        để lên hạng @ViewBag.HangTiepTheo
+                    </p>
+                </div>
+            </div>
+        }
+    </div>
+
+    <!-- Các hạng thành viên -->
+    <h3 class="text-center mb-4 fw-bold">
+        <i class="fas fa-star me-2 text-warning"></i>
+        CÁC HẠNG THÀNH VIÊN
+    </h3>
+
+    <div class="row g-4 mb-5">
+        <!-- Đồng -->
+        <div class="col-md-4">
+            <div class="tier-card bronze @(thanhVien.HangThanhVien == "Đồng" ? "active" : "")">
+                <i class="fas fa-medal tier-icon" style="color: #cd7f32;"></i>
+                <div class="tier-name" style="color: #cd7f32;">ĐỒNG</div>
+                <div class="tier-requirement">Chi tiêu: 0đ - 5,000,000đ</div>
+
+                <ul class="benefits-list">
+                    <li><i class="fas fa-check"></i>Giảm 3% mọi đơn hàng</li>
+                    <li><i class="fas fa-check"></i>1 điểm / 10,000đ</li>
+                    <li><i class="fas fa-check"></i>Voucher 10k/tháng</li>
+                    <li><i class="fas fa-check"></i>Hỗ trợ email</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Bạc -->
+        <div class="col-md-4">
+            <div class="tier-card silver @(thanhVien.HangThanhVien == "Bạc" ? "active" : "")">
+                <i class="fas fa-medal tier-icon" style="color: #c0c0c0;"></i>
+                <div class="tier-name" style="color: #7f8c8d;">BẠC</div>
+                <div class="tier-requirement">Chi tiêu: 5,000,000đ - 10,000,000đ</div>
+
+                <ul class="benefits-list">
+                    <li><i class="fas fa-check"></i>Giảm 5% mọi đơn hàng</li>
+                    <li><i class="fas fa-check"></i>1.5 điểm / 10,000đ</li>
+                    <li><i class="fas fa-check"></i>Voucher 30k/tháng</li>
+                    <li><i class="fas fa-check"></i>Hotline ưu tiên</li>
+                    <li><i class="fas fa-check"></i>Freeship đơn > 200k</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Vàng -->
+        <div class="col-md-4">
+            <div class="tier-card gold @(thanhVien.HangThanhVien == "Vàng" ? "active" : "")">
+                <i class="fas fa-crown tier-icon" style="color: #ffd700;"></i>
+                <div class="tier-name" style="color: #f39c12;">VÀNG</div>
+                <div class="tier-requirement">Chi tiêu: Trên 10,000,000đ</div>
+
+                <ul class="benefits-list">
+                    <li><i class="fas fa-check"></i>Giảm 10% mọi đơn hàng</li>
+                    <li><i class="fas fa-check"></i>2 điểm / 10,000đ</li>
+                    <li><i class="fas fa-check"></i>Voucher 100k/tháng</li>
+                    <li><i class="fas fa-check"></i>Hỗ trợ 24/7 VIP</li>
+                    <li><i class="fas fa-check"></i>Freeship toàn quốc</li>
+                    <li><i class="fas fa-check"></i>Sự kiện độc quyền</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- CTA -->
+    <div class="text-center">
+        <a href="@Url.Action("SanPham", "Home")" class="btn btn-primary btn-lg px-5">
+            <i class="fas fa-shopping-bag me-2"></i>
+            Mua Sắm Ngay
+        </a>
+    </div>
+</div>
+
+<script>
+    // Animation cho progress bar
+    window.addEventListener('load', function() {
+        const progressBar = document.querySelector('.custom-progress-bar');
+        if (progressBar) {
+            progressBar.style.width = '0%';
+            setTimeout(() => {
+                progressBar.style.width = '@ViewBag.TienDoNangHang%';
+            }, 300);
+        }
+    });
+</script>

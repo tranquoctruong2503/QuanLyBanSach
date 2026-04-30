@@ -1,0 +1,62 @@
+﻿
+@{
+    ViewBag.Title = "GioiThieu";
+    Layout = "~/Views/Shared/_LayoutPage1.cshtml";
+}
+<style>
+    .about-section {
+        padding: 4rem 0;
+    }
+</style>
+
+<main class="container my-5 flex-grow-1">
+    <div class="row ">
+
+        <!-- Cột trái: DANH MỤC SẢN PHẨM (Sitemap/Categories) -->
+        @RenderPage("~/Views/Shared/Partial.cshtml")
+
+
+
+        <!-- Cột phải: NỘI DUNG CHÍNH (Banner, Sản phẩm nổi bật) -->
+        <section class="col-lg-9">
+            <div class="bg-primary text-white text-center py-5 shadow-lg mb-5">
+                <div class="container">
+                    <h1 class="display-4 fw-bold mb-3">Về ALPHA BOOK - Cổng Tri Thức Trực Tuyến</h1>
+                    <p class="lead">Nơi lan tỏa niềm đam mê đọc sách và kết nối tri thức.</p>
+                </div>
+            </div>
+
+            <!-- PHẦN CÂU CHUYỆN CỦA CHÚNG TÔI -->
+            <section class="container about-section">
+                <div class="row align-items-center g-3">
+                    <h2 class="display-5 fw-bold text-primary ">Câu Chuyện Của Chúng Tôi</h2>
+                    <div class="col-lg-5">
+
+                        <p class="fs-5 text-muted">
+                            ALPHA BOOK được thành lập vào năm 2025 với một niềm tin duy nhất: Sách là nguồn sức mạnh vô tận.
+                            Chúng tôi nhận thấy sự khó khăn trong việc tìm kiếm các đầu sách chất lượng, đa dạng thể loại và phù hợp với độc giả Việt Nam.
+                        </p>
+                        <p>
+                            Từ đó, ALPHA BOOK ra đời không chỉ là một sàn thương mại điện tử, mà còn là một thư viện trực tuyến được tuyển chọn cẩn thận,
+                            cam kết mang đến những ấn phẩm tốt nhất, từ những tác phẩm kinh điển đến sách phát triển cá nhân và các công trình khoa học tiên tiến.
+                        </p>
+                        <p class="fw-bold">
+                            Chúng tôi không chỉ bán sách, chúng tôi bán những ý tưởng và những cuộc phiêu lưu.
+                        </p>
+                    </div>
+                    <div class="col-lg-6">
+                        <!-- Placeholder Image for Story -->
+                        <img src="https://placehold.co/800x500/0d6efd/ffffff?text=ALPHA+BOOK+STORY"
+                             alt="Hình ảnh kho sách"
+                             class="img-fluid rounded-4 shadow-lg"
+                             onerror="this.onerror=null;this.src='https://placehold.co/800x500/0d6efd/ffffff?text=Kho+Sách+Trực+Tuyến';">
+
+                    </div>
+                </div>
+            </section>
+        </section>
+    </div>
+</main>
+
+
+

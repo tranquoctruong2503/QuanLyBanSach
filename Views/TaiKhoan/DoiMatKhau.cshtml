@@ -1,0 +1,50 @@
+﻿@{
+    ViewBag.Title = "Đổi mật khẩu";
+    Layout = "~/Views/Shared/_LayoutPage1.cshtml";
+}
+
+<div class="container my-5" style="max-width: 500px;">
+    <div class="card shadow">
+        <div class="card-header bg-primary ">
+            <h4 class="mb-0 text-white"><i class="fas fa-key me-2"></i>Đổi Mật Khẩu</h4>
+        </div>
+
+        <div class="card-body">
+
+            @if (ViewBag.Error != null)
+            {
+                <div class="alert alert-danger">@ViewBag.Error</div>
+            }
+
+            @if (ViewBag.Success != null)
+            {
+                <div class="alert alert-success">@ViewBag.Success</div>
+            }
+
+            @using (Html.BeginForm("DoiMatKhau", "TaiKhoan", FormMethod.Post))
+            {
+                @Html.AntiForgeryToken()
+
+                <div class="mb-3">
+                    <label class="form-label">Mật khẩu cũ</label>
+                    <input type="password" name="MatKhauCu" class="form-control" required />
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Mật khẩu mới</label>
+                    <input type="password" name="MatKhauMoi" class="form-control" required />
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Xác nhận mật khẩu mới</label>
+                    <input type="password" name="XacNhanMatKhau" class="form-control" required />
+                </div>
+
+                <button class="btn btn-primary w-100" type="submit">
+                    <i class="fas fa-save me-2"></i>Đổi Mật Khẩu
+                </button>
+               
+            }
+        </div>
+    </div>
+</div>

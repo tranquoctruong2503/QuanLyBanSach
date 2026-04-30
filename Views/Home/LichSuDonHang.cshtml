@@ -1,0 +1,48 @@
+﻿
+@{
+    ViewBag.Title = "LichSuDonHang";
+    Layout = "~/Views/Shared/_LayoutPage1.cshtml";
+}
+
+@model List<Nhom06_QuanLyBanSah.Models.DONHANG>
+
+<h1 class="display-5 fw-bold text-primary mb-4  pb-2">Lịch sử đơn hàng</h1>
+
+
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>Mã đơn</th>
+            <th>Ngày đặt</th>
+            <th>Tổng tiền</th>
+            <th>Tình trạng giao hàng</th>
+            <th>Phương thức thanh toán</th>
+            <th>Thanh toán</th>
+            <th>Chi tiết</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var dh in Model)
+        {
+            <tr>
+                <td>@dh.MaDonHang</td>
+                <td>@dh.NgayDatHang</td>
+                <td>@String.Format("{0:N0} VNĐ", dh.TongTien)</td>
+                <td>@dh.TinhTrangGiaoHang</td>
+                <td>@dh.PhuongThucThanhToan</td>
+                <td>@dh.TinhTrangThanhToan</td>
+
+
+                <td class="text-center">
+
+                    <a href="@Url.Action("ChiTietDonHang", "Home", new { ma = dh.MaDonHang})"
+                       class="btn btn-sm btn-info" title="Xem chi tiết">
+                        <i class="fas fa-eye"></i>
+                    </a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+

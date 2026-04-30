@@ -1,0 +1,123 @@
+﻿@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<div class="container-fluid">
+    <h2 class="mb-4 text-primary fw-bold">
+        <i class="fas fa-tachometer-alt me-2"></i>Dashboard - Tổng Quan
+    </h2>
+
+    <!-- Thống kê tổng quan -->
+    <div class="row g-4 mb-4">
+        <div class="col-xl-3 col-md-6">
+            <div class="card border-0 shadow-sm bg-primary text-white">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="text-uppercase mb-1">Tổng Sách</h6>
+                            <h2 class="mb-0 fw-bold">@ViewBag.TongSach</h2>
+                        </div>
+                        <div class="fs-1">
+                            <i class="fas fa-book"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6">
+            <div class="card border-0 shadow-sm bg-success text-white">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="text-uppercase mb-1">Đơn Hàng</h6>
+                            <h2 class="mb-0 fw-bold">@ViewBag.TongDonHang</h2>
+                        </div>
+                        <div class="fs-1">
+                            <i class="fas fa-shopping-cart"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6">
+            <div class="card border-0 shadow-sm bg-info text-white">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="text-uppercase mb-1">Khách Hàng</h6>
+                            <h2 class="mb-0 fw-bold">@ViewBag.TongKhachHang</h2>
+                        </div>
+                        <div class="fs-1">
+                            <i class="fas fa-users"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6">
+            <div class="card border-0 shadow-sm bg-warning text-white">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="text-uppercase mb-1">Doanh Thu</h6>
+                            <h2 class="mb-0 fw-bold">@String.Format("{0:N0}", ViewBag.TongDoanhThu)</h2>
+                            <small>VNĐ</small>
+                        </div>
+                        <div class="fs-1">
+                            <i class="fas fa-dollar-sign"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card shadow-sm">
+                <div class="card-header bg-white">
+                    <h5 class="mb-0 text-primary"><i class="fas fa-rocket me-2"></i>Thao Tác Nhanh</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row g-3">
+                        <div class="col-md-3">
+                            <a href="@Url.Action("QuanLySach", "Admin")" class="btn btn-outline-primary w-100">
+                                <i class="fas fa-book me-2"></i>Quản Lý Sách
+                            </a>
+                        </div>
+                        <div class="col-md-3">
+                            <a href="@Url.Action("QuanLyDonHang", "Admin")" class="btn btn-outline-success w-100">
+                                <i class="fas fa-file-invoice me-2"></i>Quản Lý Đơn Hàng
+                            </a>
+                        </div>
+                        <div class="col-md-3">
+                            <a href="@Url.Action("QuanLyTaiKhoan", "Admin")" class="btn btn-outline-info w-100">
+                                <i class="fas fa-users-cog me-2"></i>Quản Lý Tài Khoản
+                            </a>
+                        </div>
+                        <div class="col-md-3">
+                            <a href="@Url.Action("Trangchu", "Home")" class="btn btn-outline-secondary w-100">
+                                <i class="fas fa-store me-2"></i>Về Trang Chủ
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Thông báo -->
+    <div class="row">
+        <div class="col-12">
+            <div class="alert alert-success" role="alert">
+                <h5 class="alert-heading"><i class="fas fa-check-circle me-2"></i>Chào mừng, @Session["HoTen"]!</h5>
+                <p class="mb-0">Bạn đang đăng nhập với quyền <strong>Quản Trị Viên</strong>. Hệ thống đang hoạt động bình thường.</p>
+            </div>
+        </div>
+    </div>
+</div>

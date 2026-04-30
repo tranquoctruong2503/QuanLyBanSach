@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="ba80d101a39e4a4d9e1c9c839bb4fadf" Name="Diagram1">
+        <EntityTypeShape EntityType="QUANLYBANSACH_NHOM06Model.CHITIETDONHANG" Width="1.5" PointX="5.25" PointY="7" IsExpanded="true" />
+        <EntityTypeShape EntityType="QUANLYBANSACH_NHOM06Model.CHITIETPHIEUNHAP" Width="1.5" PointX="5.25" PointY="3.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="QUANLYBANSACH_NHOM06Model.DANHGIA" Width="1.5" PointX="8.25" PointY="6.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="QUANLYBANSACH_NHOM06Model.DONHANG" Width="1.5" PointX="3" PointY="1.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="QUANLYBANSACH_NHOM06Model.DONHANG_VOUCHER" Width="1.5" PointX="8.25" PointY="2.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="QUANLYBANSACH_NHOM06Model.HOANTRA" Width="1.5" PointX="5.25" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="QUANLYBANSACH_NHOM06Model.NHACUNGCAP" Width="1.5" PointX="0.75" PointY="12.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="QUANLYBANSACH_NHOM06Model.NHAXUATBAN" Width="1.5" PointX="0.75" PointY="7.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="QUANLYBANSACH_NHOM06Model.PHIEUNHAP" Width="1.5" PointX="3" PointY="14.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="QUANLYBANSACH_NHOM06Model.SACH" Width="1.5" PointX="3" PointY="5.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="QUANLYBANSACH_NHOM06Model.TACGIA" Width="1.5" PointX="0.75" PointY="3.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="QUANLYBANSACH_NHOM06Model.TAIKHOAN" Width="1.5" PointX="0.75" PointY="15.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="QUANLYBANSACH_NHOM06Model.THANHVIEN" Width="1.5" PointX="3" PointY="19.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="QUANLYBANSACH_NHOM06Model.THELOAI" Width="1.5" PointX="0.75" PointY="10" IsExpanded="true" />
+        <EntityTypeShape EntityType="QUANLYBANSACH_NHOM06Model.VOUCHER" Width="1.5" PointX="6" PointY="13.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="QUANLYBANSACH_NHOM06Model.YEUTHICH" Width="1.5" PointX="5.25" PointY="10.125" IsExpanded="true" />
+        <AssociationConnector Association="QUANLYBANSACH_NHOM06Model.FK_CHITIETDONHANG_DONHANG" ManuallyRouted="false" />
+        <AssociationConnector Association="QUANLYBANSACH_NHOM06Model.FK_CHITIETDONHANG_SACH" ManuallyRouted="false" />
+        <AssociationConnector Association="QUANLYBANSACH_NHOM06Model.FK_CTPN_PHIEUNHAP" ManuallyRouted="false" />
+        <AssociationConnector Association="QUANLYBANSACH_NHOM06Model.FK_CTPN_SACH" ManuallyRouted="false" />
+        <AssociationConnector Association="QUANLYBANSACH_NHOM06Model.FK_DG_SACH" ManuallyRouted="false" />
+        <AssociationConnector Association="QUANLYBANSACH_NHOM06Model.FK_DG_USER" ManuallyRouted="false" />
+        <AssociationConnector Association="QUANLYBANSACH_NHOM06Model.FK_DHV_DONHANG" ManuallyRouted="false" />
+        <AssociationConnector Association="QUANLYBANSACH_NHOM06Model.FK_DONHANG_TAIKHOAN" ManuallyRouted="false" />
+        <AssociationConnector Association="QUANLYBANSACH_NHOM06Model.FK_HT_DONHANG" ManuallyRouted="false" />
+        <AssociationConnector Association="QUANLYBANSACH_NHOM06Model.FK_DHV_VOUCHER" ManuallyRouted="false" />
+        <AssociationConnector Association="QUANLYBANSACH_NHOM06Model.FK_PN_NHACUNGCAP" ManuallyRouted="false" />
+        <AssociationConnector Association="QUANLYBANSACH_NHOM06Model.FK_SACH_NHAXUATBAN" ManuallyRouted="false" />
+        <AssociationConnector Association="QUANLYBANSACH_NHOM06Model.FK_PN_TAIKHOAN" ManuallyRouted="false" />
+        <AssociationConnector Association="QUANLYBANSACH_NHOM06Model.FK_SACH_TACGIA" ManuallyRouted="false" />
+        <AssociationConnector Association="QUANLYBANSACH_NHOM06Model.FK_SACH_THELOAI" ManuallyRouted="false" />
+        <AssociationConnector Association="QUANLYBANSACH_NHOM06Model.FK_YT_SACH" ManuallyRouted="false" />
+        <AssociationConnector Association="QUANLYBANSACH_NHOM06Model.FK_TV_USER" ManuallyRouted="false" />
+        <AssociationConnector Association="QUANLYBANSACH_NHOM06Model.FK_YT_USER" ManuallyRouted="false" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>

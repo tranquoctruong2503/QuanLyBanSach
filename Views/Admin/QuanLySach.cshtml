@@ -1,0 +1,218 @@
+﻿@model List<Nhom06_QuanLyBanSah.Models.SACH>
+
+@{
+    ViewBag.Title = "Quản Lý Sách";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<div class="container-fluid">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="text-primary fw-bold mb-0">
+            <i class="fas fa-book me-2"></i>Quản Lý Sách
+        </h2>
+
+    </div>
+
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show">
+            <i class="fas fa-check-circle me-2"></i>@TempData["Success"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show">
+            <i class="fas fa-exclamation-circle me-2"></i>@TempData["Error"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    <!-- Thống kê -->
+    <div class="row g-3 mb-4">
+        <div class="col-md-3">
+            <div class="card bg-primary text-white">
+                <div class="card-body">
+                    <h6>Tổng Số Sách</h6>
+                    <h3 class="mb-0">@Model.Count()</h3>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card bg-success text-white">
+                <div class="card-body">
+                    <h6>Còn Hàng</h6>
+                    <h3 class="mb-0">@Model.Count(x => x.SoLuongTon > 0)</h3>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card bg-warning text-white">
+                <div class="card-body">
+                    <h6>Sắp Hết (< 10)</h6>
+                    <h3 class="mb-0">@Model.Count(x => x.SoLuongTon > 0 && x.SoLuongTon < 10)</h3>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card bg-danger text-white">
+                <div class="card-body">
+                    <h6>Hết Hàng</h6>
+                    <h3 class="mb-0">@Model.Count(x => x.SoLuongTon <= 0)</h3>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Bộ lọc -->
+    <div class="card shadow-sm mb-2">
+        <div class="card-body">
+            <form method="get" action="@Url.Action("QuanLySach", "Admin")" class="row g-3">
+                <div class="col-md-3">
+                    <input type="text" name="search" class="form-control" placeholder="Tìm theo tên sách..." value="@Request["search"]" />
+                </div>
+                <div class="col-md-3">
+                    <select name="theLoai" class="form-select">
+                        <option value="">-- Tất cả thể loại --</option>
+                        @foreach (var tl in ViewBag.TheLoaiList as List<Nhom06_QuanLyBanSah.Models.THELOAI>)
+                        {
+                            <option value="@tl.MaTheLoai" @(Request["theLoai"] == tl.MaTheLoai.ToString() ? "selected" : "")>
+                                @tl.TenTheLoai
+                            </option>
+                        }
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <select name="trangThai" class="form-select">
+                        <option value="">-- Tất cả trạng thái --</option>
+                        <option value="conhang" @(Request["trangThai"] == "conhang" ? "selected" : "")>Còn hàng</option>
+                        <option value="saphethang" @(Request["trangThai"] == "saphethang" ? "selected" : "")>Sắp hết hàng</option>
+                        <option value="hethang" @(Request["trangThai"] == "hethang" ? "selected" : "")>Hết hàng</option>
+                    </select>
+                </div>
+                <div class="col-md-3 d-flex">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-search me-1"></i>Tìm kiếm
+                    </button>
+                    <a href="@Url.Action("QuanLySach", "Admin")" class="btn btn-outline-primary" style="margin-left:10px;">
+                        <i class="fas fa-arrow-left me-2"></i>Quay Lại
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+    <a href="@Url.Action("ThemSach", "Admin")" class="btn btn-primary mb-2" style="margin-left:1020px">
+        <i class="fas fa-plus me-2"></i>Thêm Sách Mới
+    </a>
+
+    <!-- Bảng danh sách -->
+    <div class="card shadow-sm">
+        <div class="card-header bg-white">
+            <h5 class="mb-0 text-primary">Danh Sách Sách</h5>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Mã</th>
+                            <th>Hình</th>
+                            <th>Tên Sách</th>
+                            <th>Thể Loại</th>
+                            <th>Tác Giả</th>
+                            <th>Giá Bán</th>
+                            <th>Tồn Kho</th>
+                            @*<th>Đã Bán</th>
+                                <th>Trạng Thái</th>*@
+                            <th class="text-center">Thao Tác</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model != null && Model.Any())
+                        {
+                            foreach (var sach in Model)
+                            {
+                                <tr>
+                                    <td>@sach.MaSach</td>
+                                    <td>
+                                        <img src="~/HinhSP/@sach.AnhBia" alt="@sach.TenSach"
+                                             class="img-thumbnail" style="width: 50px; height: 70px; object-fit: cover;" />
+                                    </td>
+                                    <td style="width:300px">
+                                        <strong>@sach.TenSach</strong>
+                                    </td>
+                                    <td>
+                                        @*<span class="badge bg-info">@sach.THELOAI?.TenTheLoai</span>*@
+                                        @*<strong>@sach.THELOAI</strong>*@
+                                        <span class="badge bg-info">@sach.THELOAI.TenTheLoai</span>
+                                    </td>
+                                    <td style="width:300px">
+                                        @*@sach.TACGIA?.TenTacGia*@
+                                        @*<strong>@sach.TACGIA?.TenTacGia</strong>*@
+                                        <strong>@sach.TACGIA.TenTacGia</strong>
+                                    </td>
+                                    <td class="text-danger fw-bold">@string.Format("{0:N0}", sach.GiaBan) đ</td>
+                                    <td class="text-center">
+                                        @if (sach.SoLuongTon <= 0)
+                                        {
+                                            <span class="badge bg-danger">@sach.SoLuongTon</span>
+                                        }
+                                        else if (sach.SoLuongTon < 10)
+                                        {
+                                            <span class="badge bg-warning">@sach.SoLuongTon</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-success">@sach.SoLuongTon</span>
+                                        }
+                                    </td>
+
+                                    <td class="text-center">
+                                        <a href="@Url.Action("ChiTietSach", "Admin", new { id = sach.MaSach })"
+                                           class="btn btn-sm btn-info" title="Xem chi tiết">
+                                            <i class="fas fa-eye"></i>
+                                        </a>
+                                        <a href="@Url.Action("SuaSach", "Admin", new { id = sach.MaSach })"
+                                           class="btn btn-sm btn-warning" title="Sửa">
+                                            <i class="fas fa-edit"></i>
+                                        </a>
+                                        <button onclick="confirmDelete(@sach.MaSach, '@sach.TenSach')"
+                                                class="btn btn-sm btn-danger" title="Xóa">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                            }
+                        }
+                        else
+                        {
+                            <tr>
+                                <td colspan="10" class="text-center text-muted py-4">
+                                    <i class="fas fa-inbox fa-3x mb-3 d-block"></i>
+                                    Không có sách nào
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Form ẩn để xóa -->
+<form id="deleteForm" method="post" action="@Url.Action("XoaSach", "Admin")" style="display:none;">
+    @Html.AntiForgeryToken()
+    <input type="hidden" name="id" id="deleteId" />
+</form>
+
+<script>
+    function confirmDelete(id, name) {
+        if (confirm('Bạn có chắc chắn muốn xóa sách "' + name + '" không?')) {
+            document.getElementById('deleteId').value = id;
+            document.getElementById('deleteForm').submit();
+        }
+    }
+</script>

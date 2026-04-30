@@ -1,0 +1,409 @@
+﻿@{
+    ViewBag.Title = "Đặt Hàng Thành Công";
+    Layout = "~/Views/Shared/_LayoutPage1.cshtml";
+    var donHang = ViewBag.DonHang as Nhom06_QuanLyBanSah.Models.DONHANG;
+}
+
+<style>
+    .success-container {
+        max-width: 900px;
+        margin: 50px auto;
+        padding: 20px;
+    }
+
+    .success-card {
+        background: #fff;
+        border-radius: 20px;
+        box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+        overflow: hidden;
+        animation: slideIn 0.5s ease-out;
+    }
+
+    @@keyframes slideIn {
+        from {
+            opacity: 0;
+            transform: translateY(-30px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .success-header {
+        background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+        color: white;
+        padding: 40px 20px;
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+    }
+
+        .success-header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            animation: pulse 3s ease-in-out infinite;
+        }
+
+    @@keyframes pulse {
+        0%, 100% {
+            transform: scale(1);
+        }
+
+        50% {
+            transform: scale(1.1);
+        }
+    }
+
+    .success-icon {
+        font-size: 80px;
+        animation: checkmark 0.8s ease-in-out;
+        position: relative;
+        z-index: 1;
+    }
+
+    @@keyframes checkmark {
+        0% {
+            transform: scale(0) rotate(-45deg);
+            opacity: 0;
+        }
+
+        50% {
+            transform: scale(1.2) rotate(0deg);
+        }
+
+        100% {
+            transform: scale(1) rotate(0deg);
+            opacity: 1;
+        }
+    }
+
+    .success-body {
+        padding: 40px;
+    }
+
+    .order-info-box {
+        background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+        border-left: 5px solid #38ef7d;
+        padding: 25px;
+        margin: 30px 0;
+        border-radius: 12px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+    }
+
+    .order-info-item {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 15px;
+        padding-bottom: 15px;
+        border-bottom: 1px solid rgba(0,0,0,0.1);
+    }
+
+        .order-info-item:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+    .info-label {
+        font-weight: 600;
+        color: #555;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .info-value {
+        font-weight: 500;
+        color: #2c3e50;
+        text-align: right;
+    }
+
+    .btn-action {
+        padding: 15px 30px;
+        font-size: 16px;
+        font-weight: 600;
+        border-radius: 12px;
+        margin: 10px;
+        transition: all 0.3s ease;
+        border: none;
+    }
+
+        .btn-action:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+        }
+
+    .btn-primary-custom {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+    }
+
+    .btn-success-custom {
+        background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+        color: white;
+    }
+
+    .alert-success-custom {
+        background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
+        border-left: 5px solid #28a745;
+        border-radius: 12px;
+        padding: 20px;
+        margin-bottom: 30px;
+        animation: fadeIn 0.5s ease-in;
+    }
+
+    @@keyframes fadeIn {
+        from {
+            opacity: 0;
+        }
+
+        to {
+            opacity: 1;
+        }
+    }
+
+    .timeline {
+        position: relative;
+        padding-left: 30px;
+        margin-top: 30px;
+    }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 9px;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: #e0e0e0;
+        }
+
+    .timeline-item {
+        position: relative;
+        padding-bottom: 25px;
+    }
+
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -24px;
+            top: 4px;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #38ef7d;
+            border: 3px solid white;
+            box-shadow: 0 0 0 2px #38ef7d;
+        }
+
+        .timeline-item.pending::before {
+            background: #e0e0e0;
+            box-shadow: 0 0 0 2px #e0e0e0;
+        }
+
+    .payment-method-badge {
+        display: inline-block;
+        padding: 8px 16px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border-radius: 20px;
+        font-weight: 600;
+        font-size: 14px;
+    }
+
+    .divider {
+        height: 2px;
+        background: linear-gradient(90deg, transparent, #667eea, transparent);
+        margin: 30px 0;
+    }
+</style>
+
+<div class="success-container">
+    <div class="success-card">
+        <!-- Header -->
+        <div class="success-header">
+            <div class="success-icon">
+                <i class="fas fa-check-circle"></i>
+            </div>
+            <h1 class="mt-3 mb-0 fw-bold">Đặt Hàng Thành Công!</h1>
+            <p class="mt-2 mb-0 opacity-90">Cảm ơn bạn đã tin tưởng ALPHA BOOK</p>
+        </div>
+
+        <!-- Body -->
+        <div class="success-body">
+            @if (TempData["Success"] != null)
+            {
+                <div class="alert-success-custom">
+                    <i class="fas fa-check-circle me-2"></i>
+                    <strong>@TempData["Success"]</strong>
+                </div>
+            }
+
+            @if (donHang != null)
+            {
+                <!-- Thông tin đơn hàng -->
+                <div class="order-info-box">
+                    <h4 class="mb-4 text-center fw-bold text-primary">
+                        <i class="fas fa-file-invoice"></i> Thông Tin Đơn Hàng
+                    </h4>
+
+                    <div class="order-info-item">
+                        <span class="info-label">
+                            <i class="fas fa-hashtag text-primary"></i>
+                            Mã đơn hàng
+                        </span>
+                        <span class="info-value text-primary fw-bold">#@donHang.MaDonHang</span>
+                    </div>
+
+                    <div class="order-info-item">
+                        <span class="info-label">
+                            <i class="fas fa-calendar-alt text-info"></i>
+                            Ngày đặt hàng
+                        </span>
+                        <span class="info-value">@donHang.NgayDatHang</span>
+                    </div>
+
+                    <div class="order-info-item">
+                        <span class="info-label">
+                            <i class="fas fa-map-marker-alt text-danger"></i>
+                            Địa chỉ giao hàng
+                        </span>
+                        <span class="info-value">@donHang.DiaChiGiaoHang</span>
+                    </div>
+
+                    <div class="order-info-item">
+                        <span class="info-label">
+                            <i class="fas fa-credit-card text-success"></i>
+                            Phương thức thanh toán
+                        </span>
+                        <span class="info-value">
+                            <span class="payment-method-badge">
+                                <i class="fas fa-truck me-1"></i>@donHang.PhuongThucThanhToan
+                            </span>
+                        </span>
+                    </div>
+
+                    <div class="order-info-item">
+                        <span class="info-label">
+                            <i class="fas fa-info-circle text-warning"></i>
+                            Trạng thái
+                        </span>
+                        <span class="info-value">
+                            <span class="badge bg-warning text-dark">@donHang.TinhTrangGiaoHang</span>
+                        </span>
+                    </div>
+
+                    <div class="order-info-item">
+                        <span class="info-label fs-5">
+                            <i class="fas fa-money-bill-wave text-success"></i>
+                            Tổng tiền
+                        </span>
+                        <span class="info-value fs-4 text-danger fw-bold">
+                            @String.Format("{0:N0}", donHang.TongTien) ₫
+                        </span>
+                    </div>
+                </div>
+
+                <!-- Timeline tiến trình -->
+                <div class="divider"></div>
+
+                <h5 class="mb-4 fw-bold">
+                    <i class="fas fa-tasks text-primary"></i> Tiến Trình Đơn Hàng
+                </h5>
+
+                <div class="timeline">
+                    <div class="timeline-item">
+                        <strong>Đơn hàng đã được tiếp nhận</strong>
+                        <p class="text-muted mb-0 small">Đơn hàng của bạn đang chờ xác nhận từ nhà bán</p>
+                    </div>
+                    <div class="timeline-item pending">
+                        <strong>Đang chuẩn bị hàng</strong>
+                        <p class="text-muted mb-0 small">Chúng tôi đang đóng gói sản phẩm</p>
+                    </div>
+                    <div class="timeline-item pending">
+                        <strong>Đang giao hàng</strong>
+                        <p class="text-muted mb-0 small">Shipper đang trên đường giao hàng</p>
+                    </div>
+                    <div class="timeline-item pending">
+                        <strong>Giao hàng thành công</strong>
+                        <p class="text-muted mb-0 small">Bạn đã nhận được hàng và thanh toán</p>
+                    </div>
+                </div>
+
+                <div class="divider"></div>
+
+                <!-- Lưu ý COD -->
+                <div class="alert alert-info" role="alert">
+                    <h5 class="alert-heading">
+                        <i class="fas fa-info-circle"></i> Lưu Ý Quan Trọng
+                    </h5>
+                    <hr>
+                    <ul class="mb-0">
+                        <li><strong>Thanh toán khi nhận hàng (COD):</strong> Bạn sẽ thanh toán bằng tiền mặt khi nhận được hàng</li>
+                        <li><strong>Thời gian giao hàng:</strong> 3-5 ngày làm việc (tùy khu vực)</li>
+                        <li><strong>Kiểm tra hàng:</strong> Vui lòng kiểm tra kỹ sản phẩm trước khi thanh toán</li>
+                        <li><strong>Liên hệ hỗ trợ:</strong> Hotline <strong class="text-primary">028 123 4567</strong> (8:00 - 22:00 hàng ngày)</li>
+                    </ul>
+                </div>
+
+                <!-- Các nút hành động -->
+                <div class="text-center mt-5">
+                    <a href="@Url.Action("ChiTietDonHang", "Home", new { ma = donHang.MaDonHang })"
+                       class="btn btn-primary-custom btn-action">
+                        <i class="fas fa-file-invoice me-2"></i>Xem Chi Tiết Đơn Hàng
+                    </a>
+                    <a href="@Url.Action("LichSuDonHang", "Home")"
+                       class="btn btn-success-custom btn-action">
+                        <i class="fas fa-history me-2"></i>Lịch Sử Đơn Hàng
+                    </a>
+                    <a href="@Url.Action("SanPham", "Home")"
+                       class="btn btn-outline-secondary btn-action">
+                        <i class="fas fa-shopping-bag me-2"></i>Tiếp Tục Mua Sắm
+                    </a>
+                </div>
+            }
+            else
+            {
+                <!-- Trường hợp không có thông tin đơn hàng -->
+                <div class="alert alert-warning text-center">
+                    <i class="fas fa-exclamation-triangle fa-3x mb-3"></i>
+                    <h5>Không tìm thấy thông tin đơn hàng</h5>
+                    <p class="mb-3">Vui lòng kiểm tra lại trong lịch sử đơn hàng</p>
+                    <a href="@Url.Action("LichSuDonHang", "Home")" class="btn btn-primary">
+                        <i class="fas fa-history me-2"></i>Xem Lịch Sử Đơn Hàng
+                    </a>
+                </div>
+            }
+
+            <!-- Khuyến mãi -->
+            <div class="mt-5 p-4 bg-light rounded-3 text-center">
+                <h5 class="text-primary mb-3">
+                    <i class="fas fa-gift"></i> Ưu Đãi Đặc Biệt
+                </h5>
+                <p class="mb-3">
+                    Nhận <strong class="text-danger">voucher giảm 10%</strong> cho đơn hàng tiếp theo khi đánh giá sản phẩm!
+                </p>
+                <p class="text-muted small mb-0">
+                    * Áp dụng sau khi bạn nhận hàng và đánh giá sản phẩm
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Confetti effect (optional - tạo hiệu ứng pháo hoa)
+    document.addEventListener('DOMContentLoaded', function() {
+        console.log('Đặt hàng thành công!');
+
+        // Có thể thêm hiệu ứng confetti nếu muốn
+        // Sử dụng thư viện canvas-confetti
+    });
+</script>

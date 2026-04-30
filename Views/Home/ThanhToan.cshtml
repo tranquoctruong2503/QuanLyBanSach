@@ -1,0 +1,204 @@
+﻿@model List<Nhom06_QuanLyBanSah.Models.CHITIETDONHANG>
+@{
+    var don = ViewBag.DonHang as Nhom06_QuanLyBanSah.Models.DONHANG;
+    ViewBag.Title = "Thanh Toán";
+    Layout = "~/Views/Shared/_LayoutPage1.cshtml";
+}
+
+<style>
+    .payment-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 30px 15px;
+    }
+
+    .payment-card {
+        background: #fff;
+        border-radius: 10px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        margin-bottom: 20px;
+    }
+
+    .payment-header {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 20px;
+        border-radius: 10px 10px 0 0;
+    }
+
+    .payment-method-option {
+        border: 2px solid #e0e0e0;
+        border-radius: 8px;
+        padding: 15px;
+        margin-bottom: 15px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+        .payment-method-option:hover,
+        .payment-method-option.selected {
+            border-color: #667eea;
+            background-color: #f8f9ff;
+        }
+
+    .method-icon {
+        font-size: 24px;
+        margin-right: 10px;
+    }
+
+    .method-title {
+        font-size: 16px;
+        font-weight: 600;
+    }
+
+    .method-description {
+        font-size: 13px;
+        color: #666;
+    }
+
+    .vnpay-logo {
+        height: 35px;
+        margin-top: 8px;
+    }
+
+    .btn-confirm-payment {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border: none;
+        padding: 15px;
+        font-size: 16px;
+        font-weight: 600;
+        border-radius: 8px;
+    }
+</style>
+
+<div class="payment-container">
+    <h2 class="text-center mb-4 text-primary fw-bold">
+        <i class="fas fa-credit-card"></i> Thanh Toán Đơn Hàng #@don.MaDonHang
+    </h2>
+
+    <div class="row">
+        <!-- Chọn phương thức thanh toán -->
+        <div class="col-lg-5">
+            <div class="payment-card">
+                <div class="payment-header">
+                    <h5 class="mb-0">
+                        <i class="fas fa-wallet"></i> Phương Thức Thanh Toán
+                    </h5>
+                </div>
+                <div class="card-body p-4">
+                    @using (Html.BeginForm("ThanhToan", "Home", FormMethod.Post))
+                    {
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" name="maDonHang" value="@don.MaDonHang" />
+
+                        <!-- COD -->
+                        <div class="payment-method-option selected" onclick="selectPayment(this,'cod')">
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio"
+                                       name="phuongThucThanhToan"
+                                       id="cod"
+                                       value="Thanh toán khi nhận hàng (COD)"
+                                       checked>
+                                <label class="form-check-label w-100" for="cod">
+                                    <div class="d-flex">
+                                        <span class="method-icon text-success">
+                                            <i class="fas fa-truck"></i>
+                                        </span>
+                                        <div>
+                                            <div class="method-title">Thanh toán khi nhận hàng (COD)</div>
+                                            <p class="method-description">
+                                                Thanh toán tiền mặt khi nhận hàng
+                                            </p>
+                                        </div>
+                                    </div>
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- VNPay -->
+                        <div class="payment-method-option" onclick="selectPayment(this,'vnpay')">
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio"
+                                       name="phuongThucThanhToan"
+                                       id="vnpay"
+                                       value="VNPay">
+                                <label class="form-check-label w-100" for="vnpay">
+                                    <div class="d-flex">
+                                        <span class="method-icon text-danger">
+                                            <i class="fas fa-wallet"></i>
+                                        </span>
+                                        <div>
+                                            <div class="method-title">Thanh toán qua VNPay</div>
+                                            <p class="method-description">
+                                                ATM, Internet Banking, QR Code
+                                            </p>
+                                            <img src="https://vinadesign.vn/uploads/images/2023/05/vnpay-logo-vinadesign-25-12-57-55.jpg"
+                                                 class="vnpay-logo" />
+                                        </div>
+                                    </div>
+                                </label>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-success w-100 mt-4 btn-confirm-payment">
+                            <i class="fas fa-check-circle"></i> Xác Nhận Thanh Toán
+                        </button>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <!-- Chi tiết đơn hàng -->
+        <div class="col-lg-7">
+            <div class="payment-card">
+                <div class="payment-header">
+                    <h5 class="mb-0">
+                        <i class="fas fa-shopping-cart"></i> Chi Tiết Đơn Hàng
+                    </h5>
+                </div>
+                <div class="card-body p-4">
+                    <table class="table table-bordered">
+                        <thead class="table-primary text-center">
+                            <tr>
+                                <th>Tên Sách</th>
+                                <th>Số Lượng</th>
+                                <th>Đơn Giá</th>
+                                <th>Thành Tiền</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var ct in Model)
+                            {
+                                <tr>
+                                    <td>@ct.SACH.TenSach</td>
+                                    <td class="text-center">@ct.SoLuong</td>
+                                    <td class="text-end">@String.Format("{0:N0}", ct.GiaBanTaiThoiDiem) ₫</td>
+                                    <td class="text-end fw-bold">
+                                        @String.Format("{0:N0}", ct.GiaBanTaiThoiDiem * ct.SoLuong) ₫
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                        <tfoot>
+                            <tr class="table-warning">
+                                <td colspan="3" class="text-end fw-bold">Tổng tiền:</td>
+                                <td class="text-end fw-bold text-danger">
+                                    @String.Format("{0:N0}", don.TongTien) ₫
+                                </td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function selectPayment(element, id) {
+        document.querySelectorAll('.payment-method-option')
+            .forEach(e => e.classList.remove('selected'));
+        element.classList.add('selected');
+        document.getElementById(id).checked = true;
+    }
+</script>

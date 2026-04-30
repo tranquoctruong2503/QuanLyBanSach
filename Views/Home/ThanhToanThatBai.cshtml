@@ -1,0 +1,409 @@
+﻿@{
+    ViewBag.Title = "Thanh toán thất bại";
+    Layout = "~/Views/Shared/_LayoutPage1.cshtml";
+}
+
+<style>
+    .failure-container {
+        max-width: 900px;
+        margin: 50px auto;
+        padding: 20px;
+        animation: fadeIn 0.5s ease-in;
+    }
+
+    @@keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .failure-card {
+        background: #fff;
+        border-radius: 20px;
+        box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+        overflow: hidden;
+    }
+
+    .failure-header {
+        background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        color: white;
+        padding: 50px 20px;
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .failure-icon-wrapper {
+        width: 100px;
+        height: 100px;
+        margin: 0 auto 20px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: rgba(255,255,255,0.2);
+        backdrop-filter: blur(10px);
+    }
+
+    .failure-icon {
+        font-size: 100px;
+        animation: shake 0.5s ease-in-out;
+        filter: drop-shadow(0 5px 15px rgba(0,0,0,0.2));
+    }
+
+    @@keyframes shake {
+        0%, 100% {
+            transform: translateX(0) rotate(0deg);
+        }
+
+        25% {
+            transform: translateX(-10px) rotate(-5deg);
+        }
+
+        75% {
+            transform: translateX(10px) rotate(5deg);
+        }
+    }
+
+    .failure-body {
+        padding: 50px 40px;
+        text-align: center;
+    }
+
+    .error-message-box {
+        background: #fff3cd;
+        border-left: 5px solid #f5576c;
+        padding: 25px;
+        margin: 30px 0;
+        border-radius: 10px;
+        text-align: left;
+    }
+
+        .error-message-box h5 {
+            color: #856404;
+            margin-bottom: 15px;
+        }
+
+        .error-message-box p {
+            margin: 10px 0;
+            font-size: 16px;
+            color: #666;
+        }
+
+    .error-code-badge {
+        background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        color: white;
+        padding: 8px 16px;
+        border-radius: 20px;
+        font-weight: 600;
+        display: inline-block;
+    }
+
+    .order-id-badge {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 8px 16px;
+        border-radius: 20px;
+        font-weight: 600;
+        display: inline-block;
+    }
+
+    .troubleshooting-box {
+        background: #e3f2fd;
+        border-radius: 15px;
+        padding: 30px;
+        margin: 30px 0;
+        text-align: left;
+    }
+
+        .troubleshooting-box h5 {
+            color: #1976d2;
+            margin-bottom: 20px;
+        }
+
+    .troubleshooting-item {
+        display: flex;
+        align-items: flex-start;
+        margin: 15px 0;
+        padding: 15px;
+        background: white;
+        border-radius: 10px;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    }
+
+    .troubleshooting-icon {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-right: 15px;
+        flex-shrink: 0;
+    }
+
+    .troubleshooting-content h6 {
+        margin: 0 0 5px 0;
+        color: #2c3e50;
+        font-weight: 600;
+    }
+
+    .troubleshooting-content p {
+        margin: 0;
+        color: #7f8c8d;
+        font-size: 14px;
+    }
+
+    .btn-action {
+        padding: 15px 35px;
+        font-size: 16px;
+        font-weight: 600;
+        border-radius: 10px;
+        margin: 10px;
+        transition: all 0.3s ease;
+        border: none;
+    }
+
+    .btn-retry {
+        background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        color: white;
+    }
+
+        .btn-retry:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(245, 87, 108, 0.4);
+            color: white;
+        }
+
+    .btn-secondary-custom {
+        background: white;
+        color: #667eea;
+        border: 2px solid #667eea;
+    }
+
+        .btn-secondary-custom:hover {
+            background: #667eea;
+            color: white;
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
+        }
+
+    .support-box {
+        background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+        border-radius: 15px;
+        padding: 30px;
+        margin-top: 30px;
+    }
+
+        .support-box h5 {
+            color: #1976d2;
+            margin-bottom: 20px;
+        }
+
+    .contact-info {
+        display: flex;
+        align-items: center;
+        margin: 15px 0;
+        padding: 15px;
+        background: white;
+        border-radius: 10px;
+    }
+
+    .contact-icon {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-right: 15px;
+        font-size: 20px;
+    }
+
+    .alert-warning-custom {
+        background: #fff3cd;
+        border-left: 4px solid #ffc107;
+        border-radius: 10px;
+        padding: 20px;
+        margin: 20px 0;
+    }
+
+    .wave {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        height: 100px;
+        background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 120' preserveAspectRatio='none'%3E%3Cpath d='M321.39,56.44c58-10.79,114.16-30.13,172-41.86,82.39-16.72,168.19-17.73,250.45-.39C823.78,31,906.67,72,985.66,92.83c70.05,18.48,146.53,26.09,214.34,3V0H0V27.35A600.21,600.21,0,0,0,321.39,56.44Z' fill='%23ffffff'%3E%3C/path%3E%3C/svg%3E");
+        background-size: cover;
+    }
+</style>
+
+<div class="failure-container">
+    <div class="failure-card">
+        <div class="failure-header">
+            <div class="failure-icon-wrapper">
+                <div class="failure-icon">
+                    <i class="fas fa-times-circle"></i>
+                </div>
+            </div>
+            <h1 class="display-4 mb-2">Thanh Toán Thất Bại!</h1>
+            <p class="lead mb-0">Rất tiếc, giao dịch của bạn không thành công</p>
+            <div class="wave"></div>
+        </div>
+
+        <div class="failure-body">
+            <div class="error-message-box">
+                <h5><i class="fas fa-exclamation-triangle"></i> Thông tin lỗi</h5>
+                <p><strong>@ViewBag.Message</strong></p>
+
+                @if (ViewBag.OrderId != null)
+                {
+                    <p class="mt-3">
+                        <i class="fas fa-receipt"></i>
+                        <strong>Mã đơn hàng:</strong>
+                        <span class="order-id-badge">#@ViewBag.OrderId</span>
+                    </p>
+                }
+
+                @if (ViewBag.ErrorCode != null)
+                {
+                    <p>
+                        <i class="fas fa-code"></i>
+                        <strong>Mã lỗi:</strong>
+                        <span class="error-code-badge">@ViewBag.ErrorCode</span>
+                    </p>
+                }
+            </div>
+
+            <div class="alert-warning-custom">
+                <i class="fas fa-info-circle"></i>
+                <strong>Lưu ý:</strong> Đơn hàng của bạn chưa được thanh toán.
+                Không có khoản tiền nào bị trừ từ tài khoản của bạn.
+            </div>
+
+            <div class="troubleshooting-box">
+                <h5><i class="fas fa-tools"></i> Các bước khắc phục</h5>
+
+                <div class="troubleshooting-item">
+                    <div class="troubleshooting-icon">
+                        <i class="fas fa-wallet"></i>
+                    </div>
+                    <div class="troubleshooting-content">
+                        <h6>Kiểm tra số dư tài khoản</h6>
+                        <p>Đảm bảo tài khoản của bạn có đủ số dư để thanh toán</p>
+                    </div>
+                </div>
+
+                <div class="troubleshooting-item">
+                    <div class="troubleshooting-icon">
+                        <i class="fas fa-credit-card"></i>
+                    </div>
+                    <div class="troubleshooting-content">
+                        <h6>Kiểm tra thông tin thẻ</h6>
+                        <p>Xác nhận thông tin thẻ và hạn mức giao dịch của bạn</p>
+                    </div>
+                </div>
+
+                <div class="troubleshooting-item">
+                    <div class="troubleshooting-icon">
+                        <i class="fas fa-wifi"></i>
+                    </div>
+                    <div class="troubleshooting-content">
+                        <h6>Kiểm tra kết nối Internet</h6>
+                        <p>Đảm bảo kết nối Internet của bạn ổn định</p>
+                    </div>
+                </div>
+
+                <div class="troubleshooting-item">
+                    <div class="troubleshooting-icon">
+                        <i class="fas fa-exchange-alt"></i>
+                    </div>
+                    <div class="troubleshooting-content">
+                        <h6>Thử phương thức khác</h6>
+                        <p>Bạn có thể chọn phương thức thanh toán khác như COD hoặc Chuyển khoản</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-5">
+                @if (ViewBag.OrderId != null)
+                {
+                    <a href="@Url.Action("ThanhToan", "Home", new { id = ViewBag.OrderId })"
+                       class="btn btn-retry btn-action">
+                        <i class="fas fa-redo"></i> Thử Lại Thanh Toán
+                    </a>
+                }
+                <a href="@Url.Action("GioHang", "Home")"
+                   class="btn btn-secondary-custom btn-action">
+                    <i class="fas fa-shopping-cart"></i> Về Giỏ Hàng
+                </a>
+                <a href="@Url.Action("SanPham", "Home")"
+                   class="btn btn-secondary-custom btn-action">
+                    <i class="fas fa-home"></i> Về Trang Chủ
+                </a>
+            </div>
+
+            <div class="support-box">
+                <h5><i class="fas fa-headset"></i> Cần Hỗ Trợ?</h5>
+                <p class="mb-3">Nếu bạn tiếp tục gặp vấn đề, đừng ngại liên hệ với chúng tôi:</p>
+
+                <div class="contact-info">
+                    <div class="contact-icon">
+                        <i class="fas fa-phone"></i>
+                    </div>
+                    <div>
+                        <strong>Hotline hỗ trợ 24/7</strong>
+                        <p class="mb-0 text-primary">1900 xxxx</p>
+                    </div>
+                </div>
+
+                <div class="contact-info">
+                    <div class="contact-icon">
+                        <i class="fas fa-envelope"></i>
+                    </div>
+                    <div>
+                        <strong>Email hỗ trợ</strong>
+                        <p class="mb-0 text-primary">support@bookstore.com</p>
+                    </div>
+                </div>
+
+                <div class="contact-info">
+                    <div class="contact-icon">
+                        <i class="fab fa-facebook-messenger"></i>
+                    </div>
+                    <div>
+                        <strong>Chat trực tuyến</strong>
+                        <p class="mb-0 text-primary">Messenger: fb.com/bookstore</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="alert alert-info mt-4" style="border-radius: 10px;">
+                <i class="fas fa-lightbulb"></i>
+                <strong>Mẹo:</strong> Bạn có thể chọn thanh toán COD (thanh toán khi nhận hàng)
+                để không phải thanh toán trực tuyến.
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Auto focus vào nút thử lại sau 2 giây
+    setTimeout(function() {
+        const retryBtn = document.querySelector('.btn-retry');
+        if (retryBtn) {
+            retryBtn.focus();
+        }
+    }, 2000);
+</script>

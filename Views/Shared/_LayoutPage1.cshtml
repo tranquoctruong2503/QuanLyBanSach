@@ -1,0 +1,727 @@
+﻿<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trang Chủ - ALPHA BOOK</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" xintegrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" xintegrity="sha512-SnH5WK+bZxgPHs44uWIX+LLMDJzL31r+2K6wY3s+61A3z4uYpL6R6J9l+z6I1A5g==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <style>
+        /* Thiết lập font và màu nền */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f0f2f5; /* Nền xám nhạt */
+            color: #1a202c;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            width: 1500px
+        }
+        /* Custom styles cho thanh tìm kiếm */
+        .search-container input {
+            padding-right: 2.5rem;
+            border-radius: 0.5rem;
+            border: 2px solid #ced4da;
+        }
+
+            .search-container input:focus {
+                border-color: #0d6efd; /* Blue focus */
+                box-shadow: none;
+            }
+
+        .product-card {
+            border-radius: 1rem; /* Rounded corners */
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+            .product-card:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+            }
+        /* Sticky Header */
+        header {
+            top: 0;
+            z-index: 1030;
+            position: sticky;
+        }
+
+        /* Styles cho Chatbot */
+        .chat-widget-button {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #0d6efd 0%, #0a58ca 100%);
+            color: white;
+            border: none;
+            font-size: 28px;
+            cursor: pointer;
+            box-shadow: 0 4px 20px rgba(13, 110, 253, 0.4);
+            z-index: 9999;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+            .chat-widget-button:hover {
+                transform: scale(1.1);
+                box-shadow: 0 6px 30px rgba(13, 110, 253, 0.6);
+            }
+
+        .chat-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: #dc3545;
+            color: white;
+            font-size: 10px;
+            font-weight: bold;
+            padding: 2px 6px;
+            border-radius: 10px;
+            border: 2px solid white;
+        }
+
+        .chatbox-popup {
+            position: fixed;
+            bottom: 90px;
+            right: 20px;
+            width: 380px;
+            height: 550px;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            z-index: 9998;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .chatbox-header {
+            background: linear-gradient(135deg, #0d6efd 0%, #0a58ca 100%);
+            color: white;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .chatbox-header-content {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+            .chatbox-header-content i {
+                font-size: 24px;
+            }
+
+            .chatbox-header-content h4 {
+                margin: 0;
+                font-size: 16px;
+                font-weight: 600;
+            }
+
+            .chatbox-header-content p {
+                margin: 0;
+                font-size: 12px;
+                opacity: 0.9;
+            }
+
+        .chatbox-close-btn {
+            background: rgba(255,255,255,0.2);
+            border: none;
+            color: white;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .chatbox-body {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            background: #f8f9fa;
+        }
+
+        .chatbox-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+        }
+
+        .chatbox-welcome {
+            text-align: center;
+            padding: 20px;
+            background: white;
+            border-radius: 15px;
+            margin-bottom: 15px;
+        }
+
+            .chatbox-welcome i {
+                font-size: 40px;
+                color: #0d6efd;
+                margin-bottom: 10px;
+            }
+
+            .chatbox-welcome h5 {
+                margin: 10px 0 5px 0;
+                color: #333;
+                font-size: 18px;
+            }
+
+            .chatbox-welcome p {
+                margin: 0;
+                color: #6c757d;
+                font-size: 14px;
+            }
+
+        .chatbox-suggestions {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .suggestion-btn {
+            background: white;
+            border: 2px solid #e9ecef;
+            padding: 12px 15px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 14px;
+            text-align: left;
+            transition: all 0.2s;
+            color: #333;
+        }
+
+            .suggestion-btn:hover {
+                background: #0d6efd;
+                color: white;
+                border-color: #0d6efd;
+                transform: translateX(5px);
+            }
+
+        .chatbox-message {
+            display: flex;
+            margin-bottom: 15px;
+        }
+
+            .chatbox-message.user {
+                justify-content: flex-end;
+            }
+
+        .chatbox-message-content {
+            max-width: 75%;
+            padding: 12px 15px;
+            border-radius: 15px;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .chatbox-message.bot .chatbox-message-content {
+            background: white;
+            color: #333;
+            border-bottom-left-radius: 5px;
+        }
+
+        .chatbox-message.user .chatbox-message-content {
+            background: linear-gradient(135deg, #0d6efd 0%, #0a58ca 100%);
+            color: white;
+            border-bottom-right-radius: 5px;
+        }
+
+        .chatbox-typing {
+            display: flex;
+            gap: 4px;
+            padding: 12px 15px;
+            background: white;
+            border-radius: 15px;
+            width: fit-content;
+        }
+
+            .chatbox-typing span {
+                width: 8px;
+                height: 8px;
+                border-radius: 50%;
+                background: #0d6efd;
+                animation: typing 1.4s infinite;
+            }
+
+                .chatbox-typing span:nth-child(2) {
+                    animation-delay: 0.2s;
+                }
+
+                .chatbox-typing span:nth-child(3) {
+                    animation-delay: 0.4s;
+                }
+
+        @@keyframes typing {
+            0%, 60%, 100% {
+                transform: translateY(0);
+                opacity: 0.7;
+            }
+
+            30% {
+                transform: translateY(-8px);
+                opacity: 1;
+            }
+        }
+
+        .chatbox-input-area {
+            padding: 15px;
+            background: white;
+            border-top: 1px solid #e9ecef;
+            display: flex;
+            gap: 10px;
+        }
+
+        .chatbox-input {
+            flex: 1;
+            padding: 12px 15px;
+            border: 2px solid #e9ecef;
+            border-radius: 25px;
+            font-size: 14px;
+            outline: none;
+        }
+
+            .chatbox-input:focus {
+                border-color: #0d6efd;
+            }
+
+        .chatbox-send-btn {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #0d6efd 0%, #0a58ca 100%);
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+            .chatbox-send-btn:hover {
+                transform: scale(1.1);
+            }
+    </style>
+</head>
+<body>
+
+    <header class="bg-white shadow-sm">
+        <div class="container py-3 d-flex flex-column flex-md-row align-items-center justify-content-between gap-3">
+
+            <div class="d-flex align-items-center">
+                <div class="fs-3 fw-bolder text-primary">
+                    <img src="~/Images/logo.png" width="50px" height="50px" />
+                    ALPHA BOOK
+                </div>
+            </div>
+
+            <div class="flex-grow-1 mx-md-5 w-100 w-md-auto" style="max-width: 500px;">
+                <form action="@Url.Action("SearchSanPham", "Home")" method="get" class="input-group search-container">
+                    <input type="text" name="keyword" class="form-control"
+                           placeholder="Tìm theo tên sách, tác giả, thể loại..."
+                           value="@Request["keyword"]" />
+
+
+                    <button class="btn btn-primary" type="submit" id="button-addon2">
+                        <i class="fas fa-search"></i>
+                    </button>
+                </form>
+            </div>
+
+            <div class="d-flex gap-3">
+
+                <div class="nav-item dropdown mt-2">
+                    <a class="nav-link dropdown-toggle text-primary fw-bold" href="#" id="navbarDropdown"
+                       role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="fas fa-user me-1"></i>
+                        @if (Session["userID"] != null)
+                        {
+                            @:Xin chào, @Session["HoTen"]
+                        }
+                        else
+                        {
+                            @:Tài khoản
+                        }
+                    </a>
+
+                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                        @if (Session["userID"] == null)
+                        {
+                            <li>
+                                <a class="dropdown-item" href="@Url.Action("DangNhap", "TaiKhoan")">
+                                    <i class="fas fa-sign-in-alt me-1"></i>Đăng nhập
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item" href="@Url.Action("DangKy", "TaiKhoan")">
+                                    <i class="fas fa-user-plus me-1"></i>Đăng ký
+                                </a>
+                            </li>
+                        }
+                        else
+                        {
+                            @* Nếu là Admin thì thêm mục quản trị *@
+                            if (Session["Role"] != null && Session["Role"].ToString() == "admin")
+                            {
+                                <li>
+                                    <a class="dropdown-item" href="@Url.Action("Index", "Admin")">
+                                        <i class="fas fa-tools me-1"></i>Trang quản trị
+                                    </a>
+                                </li>
+                                <li><hr class="dropdown-divider" /></li>
+                            }
+
+                            <li>
+                                <a class="dropdown-item" href="@Url.Action("ThongTinCaNhan", "TaiKhoan")">
+                                    <i class="fas fa-id-card me-1"></i>Thông tin cá nhân
+                                </a>
+                            </li>                           
+                            <li class="nav-item">
+                                <a class="dropdown-item" href="@Url.Action("ThanhVien", "Home")">
+                                    <i class="fas fa-crown me-1"></i> Thành Viên
+                                </a>
+                            </li>
+
+                            <li>
+                                <a class="dropdown-item text-danger" href="@Url.Action("DangXuat", "TaiKhoan")">
+                                    <i class="fas fa-sign-out-alt me-1"></i>Đăng xuất
+                                </a>
+                            </li>
+                        }
+                    </ul>
+                </div>
+
+                @Html.Action("GioHangPartial", "Home")
+            </div>
+        </div>
+
+        <nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm">
+            <div class="container">
+
+                <div class="collapse navbar-collapse" id="mainMenu">
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0 justify-content-between">
+                        <li class="nav-item">
+                            <a class="nav-link active" aria-current="page" href="~/Home/Trangchu">
+                                <i class="fas fa-home me-1"></i> Trang Chủ
+                            </a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link active" href="~/Home/SanPham">
+                                <i class="fas fa-box me-1"></i> Sản Phẩm
+                            </a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link active" href="~/Home/GioiThieu">
+                                <i class="fas fa-info-circle me-1"></i> Giới Thiệu
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link active" href="~/Home/TinTuc">
+                                <i class="fas fa-newspaper me-1"></i> Tin Tức
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link active" href="~/Home/LienHe">
+                                <i class="fas fa-envelope me-1"></i> Liên Hệ
+                            </a>
+                        </li>
+
+                        <li class="nav-item" style="margin-left:550px">
+                            <a class="nav-link active" href="~/Home/LichSuDonHang">
+                                <i class="fas fa-history me-1"></i> Lịch sử Đơn Hàng
+                            </a>
+                        </li>
+
+
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    @RenderBody();
+
+    <footer class="bg-white text-white mt-5 py-5">
+        <div class="container">
+            <div class="row row-cols-2 row-cols-md-4 g-4" style="line-height:1.5">
+
+                <div class="col" style="line-height:1.5">
+                    <h2 class="d-flex align-items-center">
+                        <div class="fs-3 fw-bolder text-primary">
+                            <img src="~/Images/logo.png" width="50px" height="50px" />
+                            ALPHA BOOK
+                        </div>
+                    </h2>
+                    <p class="text-secondary small d-flex align-items-center mb-2">
+                        <i class="fas fa-map-marker-alt me-2 text-primary"></i>
+                        Đường 3/2, Quận 10, TP.HCM
+                    </p>
+
+                    <p class="text-secondary small d-flex align-items-center mb-2">
+                        <i class="fas fa-envelope me-2 text-primary"></i>
+                        contact@alphabook.vn
+                    </p>
+                    <p class="text-secondary small d-flex align-items-center">
+                        <i class="fas fa-phone me-2 text-primary "></i>
+                        (028) 123 4567
+                    </p>
+                </div>
+
+                <div class="col">
+                    <h3 class="fs-6 fw-semibold mb-3 text-primary">VỀ ALPHA BOOK</h3>
+                    <ul class="list-unstyled small">
+                        <li class="mb-2"><a href="#" class="text-secondary text-decoration-none">Trang Chủ</a></li>
+                        <li class="mb-2"><a href="#" class="text-secondary text-decoration-none">Sản Phẩm</a></li>
+                        <li class="mb-2"><a href="#" class="text-secondary text-decoration-none">Tin Tức</a></li>
+                        <li class="mb-2"><a href="#" class="text-secondary text-decoration-none">Giới Thiệu</a></li>
+                    </ul>
+                </div>
+
+                <div class="col">
+                    <h3 class="fs-6 fw-semibold mb-3 text-primary">HỖ TRỢ KHÁCH HÀNG</h3>
+                    <ul class="list-unstyled small">
+                        <li class="mb-2"><a href="#" class="text-secondary text-decoration-none">Chính sách đổi trả</a></li>
+                        <li class="mb-2"><a href="#" class="text-secondary text-decoration-none">Chính sách bảo mật</a></li>
+                        <li class="mb-2"><a href="#" class="text-secondary text-decoration-none">Phương thức thanh toán</a></li>
+                        <li class="mb-2"><a href="#" class="text-secondary text-decoration-none">Câu hỏi thường gặp</a></li>
+                    </ul>
+                </div>
+               
+
+                <div class="col">
+                    <h3 class="fs-6 fw-bold mb-3 text-primary">FANPAGE</h3>
+                    <a href="#" class="text-secondary hover-text-info transition"><i class="fab fa-facebook-f fa-lg text-primary"> Facebook</i></a><br /><br />
+                    <a href="#" class="text-secondary hover-text-info transition"><i class="fab fa-instagram fa-lg text-primary"> Instagram</i> </a><br /><br />
+                    <a href="#" class="text-secondary hover-text-info transition"><i class="fab fa-twitter fa-lg text-primary"> Twitter</i> </a>
+
+                </div>
+            </div>
+        </div>
+
+        <div class="mt-5 pt-3 border-top border-secondary-subtle text-center">
+            <p class="text-secondary small mb-0">© 2025 ALPHA BOOK. Bản quyền thuộc về ALPHA BOOK.</p>
+        </div>
+ 
+
+
+
+        
+    </footer>
+    <div id="aiChatWidget">
+        <button id="chatToggleBtn" class="chat-widget-button" onclick="toggleChatbox()">
+            <i class="fas fa-robot"></i>
+            <span class="chat-badge">AI</span>
+        </button>
+
+        <div id="chatboxPopup" class="chatbox-popup" style="display: none;">
+            <div class="chatbox-header">
+                <div class="chatbox-header-content">
+                    <i class="fas fa-robot"></i>
+                    <div>
+                        <h4>Trợ Lý AI</h4>
+                        <p>ALPHA BOOK</p>
+                    </div>
+                </div>
+                <button onclick="toggleChatbox()" class="chatbox-close-btn">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+
+            <div class="chatbox-body">
+                <div id="chatboxMessages" class="chatbox-messages">
+                    <div class="chatbox-welcome">
+                        <i class="fas fa-book-reader"></i>
+                        <h5>Xin chào! 👋</h5>
+                        <p>Tôi là trợ lý AI của ALPHA BOOK. Tôi có thể giúp gì cho bạn?</p>
+                    </div>
+
+                    <div class="chatbox-suggestions">
+                        <button class="suggestion-btn" onclick="sendQuickMessage('Gợi ý sách hay')">
+                            📚 Gợi ý sách hay
+                        </button>
+                        <button class="suggestion-btn" onclick="sendQuickMessage('Cách đặt hàng')">
+                            🛒 Cách đặt hàng
+                        </button>
+                        <button class="suggestion-btn" onclick="sendQuickMessage('Chính sách đổi trả')">
+                            🔄 Chính sách đổi trả
+                        </button>
+                    </div>
+                </div>
+
+                <div class="chatbox-input-area">
+                    <input type="text"
+                           id="chatboxInput"
+                           class="chatbox-input"
+                           placeholder="Nhập câu hỏi của bạn..."
+                           onkeypress="handleChatboxKeyPress(event)">
+                    <button onclick="sendChatMessage()" class="chatbox-send-btn">
+                        <i class="fas fa-paper-plane"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+
+        const GEMINI_API_KEY = 'AIzaSyBjWNpWYre0Yd8xn4rcmmMq3pW8_mmxjgM';
+        const GEMINI_API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${GEMINI_API_KEY}`;
+
+        function toggleChatbox() {
+            const popup = document.getElementById('chatboxPopup');
+            if (popup.style.display === 'none' || popup.style.display === '') {
+                popup.style.display = 'flex';
+                document.getElementById('chatboxInput').focus();
+            } else {
+                popup.style.display = 'none';
+            }
+        }
+
+        function addChatMessage(content, isUser) {
+            const messagesContainer = document.getElementById('chatboxMessages');
+
+            if (isUser) {
+                const welcome = messagesContainer.querySelector('.chatbox-welcome');
+                const suggestions = messagesContainer.querySelector('.chatbox-suggestions');
+                if (welcome) welcome.remove();
+                if (suggestions) suggestions.remove();
+            }
+
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `chatbox-message ${isUser ? 'user' : 'bot'}`;
+            const contentDiv = document.createElement('div');
+            contentDiv.className = 'chatbox-message-content';
+
+            contentDiv.innerHTML = isUser ? content : convertMarkdownToHtml(content);
+
+            messageDiv.appendChild(contentDiv);
+            messagesContainer.appendChild(messageDiv);
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        }
+
+        function convertMarkdownToHtml(markdown) {
+            let html = markdown.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+            html = html.replace(/\*(.*?)\*/g, '<em>$1</em>');
+            html = html.replace(/\n/g, '<br>');
+            return html;
+        }
+
+        function showTyping() {
+            const messagesContainer = document.getElementById('chatboxMessages');
+            const typingDiv = document.createElement('div');
+            typingDiv.className = 'chatbox-message bot';
+            typingDiv.id = 'typingIndicator';
+            typingDiv.innerHTML = '<div class="chatbox-typing"><span></span><span></span><span></span></div>';
+            messagesContainer.appendChild(typingDiv);
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        }
+
+        function removeTyping() {
+            const typing = document.getElementById('typingIndicator');
+            if (typing) typing.remove();
+        }
+
+        async function sendChatMessage() {
+            const input = document.getElementById('chatboxInput');
+            const message = input.value.trim();
+            if (!message) return;
+
+            input.value = '';
+            input.disabled = true;
+
+            addChatMessage(message, true);
+            showTyping();
+
+            // System prompt đã được tối ưu hóa
+            const systemPrompt = `Bạn là trợ lý AI thân thiện của ALPHA BOOK - cửa hàng sách trực tuyến hàng đầu Việt Nam.
+Nhiệm vụ: Tư vấn, giới thiệu sách, và trả lời câu hỏi về dịch vụ (đặt hàng, giao hàng, thanh toán, đổi trả).
+Quy tắc: Luôn trả lời bằng tiếng Việt. Ngắn gọn (2-4 câu), súc tích. Nếu không biết, gợi ý liên hệ hotline: (028) 123 4567.`;
+
+            const fullPrompt = `${systemPrompt}\n\nCâu hỏi của khách hàng: ${message}`;
+
+            try {
+                const response = await fetch(GEMINI_API_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        contents: [{
+                            parts: [{
+                                text: fullPrompt
+                            }]
+                        }],
+                        generationConfig: {
+                            temperature: 0.7,
+                            topK: 40,
+                            topP: 0.95,
+                            maxOutputTokens: 1024
+                        }
+                    })
+                });
+
+                removeTyping();
+
+                if (!response.ok) {
+                    // Xử lý lỗi HTTP (400, 403, 429, 500...)
+                    const errorText = await response.text();
+                    console.error(`HTTP error! status: ${response.status}`, errorText);
+                    addChatMessage(`Lỗi API: ${response.status}. Vui lòng kiểm tra lại API Key hoặc Quota sử dụng!`, false);
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                const data = await response.json();
+
+                if (data.candidates && data.candidates[0] && data.candidates[0].content && data.candidates[0].content.parts) {
+                    const reply = data.candidates[0].content.parts[0].text;
+                    addChatMessage(reply, false);
+                } else if (data.error) {
+                    console.error('API Error Response:', data.error);
+                    addChatMessage('Xin lỗi, đã có lỗi từ phía máy chủ API. Vui lòng kiểm tra Console để biết chi tiết.', false);
+                } else {
+                    console.error('Unexpected response structure:', data);
+                    addChatMessage('Xin lỗi, tôi không nhận được phản hồi. Vui lòng thử lại!', false);
+                }
+            } catch (error) {
+                removeTyping();
+                console.error('Chat error:', error);
+
+                // Cung cấp thông báo lỗi chi tiết hơn
+                if (error.message.includes('Failed to fetch')) {
+                    addChatMessage('Đã có lỗi kết nối. Vui lòng kiểm tra đường truyền Internet của bạn và thử lại!', false);
+                } else if (!error.message.includes('HTTP error!')) {
+                    // Lỗi fetch không liên quan đến HTTP status code (ví dụ: CORS, network down)
+                    addChatMessage('Đã có lỗi mạng. Vui lòng kiểm tra kết nối internet và tải lại trang!', false);
+                }
+                // Nếu là lỗi HTTP, thông báo đã được đưa ra ở trên.
+            }
+
+            input.disabled = false;
+            input.focus();
+        }
+
+        function sendQuickMessage(text) {
+            document.getElementById('chatboxInput').value = text;
+            sendChatMessage();
+        }
+
+        function handleChatboxKeyPress(event) {
+            if (event.key === 'Enter') {
+                event.preventDefault();
+                sendChatMessage();
+            }
+        }
+    </script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" xintegrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+
+
+</body>
+</html>

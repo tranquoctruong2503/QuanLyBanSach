@@ -1,0 +1,193 @@
+﻿@model List<Nhom06_QuanLyBanSah.Models.DONHANG>
+
+@{
+    ViewBag.Title = "Quản Lý Đơn Hàng";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<div class="container-fluid">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="text-primary fw-bold mb-0">
+            <i class="fas fa-shopping-cart me-2"></i>Quản Lý Đơn Hàng
+        </h2>
+    </div>
+
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show">
+            <i class="fas fa-check-circle me-2"></i>@TempData["Success"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    <!-- Thống kê -->
+    <div class="row g-3 mb-4">
+        <div class="col-md-3">
+            <div class="card bg-secondary text-white">
+                <div class="card-body">
+                    <h6>Chờ Xử Lý</h6>
+                    <h3 class="mb-0">@Model.Count(x => x.TinhTrangGiaoHang == "Chờ xử lý")</h3>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card bg-info text-white">
+                <div class="card-body">
+                    <h6>Đã Xác Nhận</h6>
+                    <h3 class="mb-0">@Model.Count(x => x.TinhTrangGiaoHang == "Đã xác nhận")</h3>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card bg-warning text-white">
+                <div class="card-body">
+                    <h6>Đang Vận Chuyển</h6>
+                    <h3 class="mb-0">@Model.Count(x => x.TinhTrangGiaoHang == "Đang vận chuyển")</h3>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card bg-success text-white">
+                <div class="card-body">
+                    <h6>Đã Giao</h6>
+                    <h3 class="mb-0">@Model.Count(x => x.TinhTrangGiaoHang == "Đã giao hàng thành công")</h3>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bộ lọc -->
+    <div class="card shadow-sm mb-4">
+        <div class="card-body">
+            <form method="get" action="@Url.Action("QuanLyDonHang", "Admin")" class="row ">
+                <div class="col-md-3">
+                    <input type="text" name="search" class="form-control"
+                           placeholder="Tìm theo mã đơn hoặc tên KH..." value="@Request["search"]" />
+                </div>
+                <div class="col-md-2">
+                    <select name="trangThai" class="form-select">
+                        <option value="">Tất cả trạng thái</option>
+                        <option value="Chờ xử lý" @(Request["trangThai"] == "Chờ xử lý" ? "selected" : "")>Chờ xử lý</option>
+                        <option value="Đã xác nhận" @(Request["trangThai"] == "Đã xác nhận" ? "selected" : "")>Đã xác nhận</option>
+                        <option value="Đang vận chuyển" @(Request["trangThai"] == "Đang vận chuyển" ? "selected" : "")>Đang vận chuyển</option>
+                        <option value="Đã giao hàng thành công" @(Request["trangThai"] == "Đã giao hàng thành công" ? "selected" : "")>Đã giao</option>
+                        <option value="Đã hủy" @(Request["trangThai"] == "Đã hủy" ? "selected" : "")>Đã hủy</option>
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <input type="date" name="tuNgay" class="form-control" value="@Request["tuNgay"]" />
+                </div>
+                <div class="col-md-2">
+                    <input type="date" name="denNgay" class="form-control" value="@Request["denNgay"]" />
+                </div>
+                <div class="col-md-3">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-search me-1"></i>Tìm
+                    </button>
+                    <a href="@Url.Action("QuanLyDonHang", "Admin")" class="btn btn-outline-primary" style="margin-left:10px">
+                        <i class="fas fa-arrow-left me-2"></i>Quay Lại
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Bảng danh sách -->
+    <div class="card shadow-sm">
+        <div class="card-header bg-white">
+            <h5 class="mb-0 text-primary">Danh Sách Đơn Hàng</h5>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Mã Đơn</th>
+                            <th>Ngày Đặt</th>
+                            <th>Khách Hàng</th>
+                            <th>Địa Chỉ</th>
+                            <th>Thanh Toán</th>
+                            <th>Tổng Tiền</th>
+                            <th>Trạng Thái</th>
+                            <th class="text-center">Thao Tác</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model != null && Model.Any())
+                        {
+                            foreach (var dh in Model)
+                            {
+                                <tr>
+                                    <td>
+                                        <strong class="text-primary">#@dh.MaDonHang</strong>
+                                    </td>
+                                    <td>
+                                        <small>@dh.NgayDatHang</small>
+                                    </td>
+                                    <td>
+                                        <strong>@dh.TAIKHOAN.HoTen</strong><br />
+                                        <small class="text-muted">@dh.TAIKHOAN.DienThoai</small>
+                                    </td>
+                                    <td>
+                                        <small>@(dh.DiaChiGiaoHang.Length > 30 ? dh.DiaChiGiaoHang.Substring(0, 30) + "..." : dh.DiaChiGiaoHang)</small>
+                                    </td>
+                                    <td>
+                                        @if (dh.PhuongThucThanhToan == "Thanh toán khi nhận hàng")
+                                        {
+                                            <span class="badge bg-secondary">COD</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-info">@dh.PhuongThucThanhToan</span>
+                                        }
+                                    </td>
+                                    <td>
+                                        <strong class="text-danger">@string.Format("{0:N0}", dh.TongTien) đ</strong>
+                                    </td>
+                                    <td>
+                                        @switch (dh.TinhTrangGiaoHang)
+                                        {
+                                            case "Chờ xử lý":
+                                                <span class="badge bg-secondary">Chờ xử lý</span>
+                                                break;
+                                            case "Đã xác nhận":
+                                                <span class="badge bg-info">Đã xác nhận</span>
+                                                break;
+                                            case "Đang vận chuyển":
+                                                <span class="badge bg-warning">Đang vận chuyển</span>
+                                                break;
+                                            case "Đã giao hàng thành công":
+                                                <span class="badge bg-success">Đã giao</span>
+                                                break;
+                                            case "Đã hủy":
+                                                <span class="badge bg-danger">Đã hủy</span>
+                                                break;
+                                            default:
+                                                <span class="badge bg-secondary">@dh.TinhTrangGiaoHang</span>
+                                                break;
+                                        }
+                                    </td>
+                                    <td class="text-center">
+                                        <a href="@Url.Action("ChiTietDonHang", "Admin", new { id = dh.MaDonHang })"
+                                           class="btn btn-sm btn-info" title="Xem chi tiết">
+                                            <i class="fas fa-eye"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                            }
+                        }
+                        else
+                        {
+                            <tr>
+                                <td colspan="8" class="text-center text-muted py-4">
+                                    <i class="fas fa-inbox fa-3x mb-3 d-block"></i>
+                                    Không có đơn hàng nào
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

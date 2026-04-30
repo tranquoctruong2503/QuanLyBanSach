@@ -1,0 +1,378 @@
+﻿@model Nhom06_QuanLyBanSah.Models.SACH
+@{
+    ViewBag.Title = "ChiTietSanPham";
+    Layout = "~/Views/Shared/_LayoutPage1.cshtml";
+}
+
+<style>
+    .card-shadow {
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    }
+
+    .text-blue-600 {
+        color: #2563eb !important;
+    }
+
+    .bg-blue-600 {
+        background-color: #2563eb !important;
+    }
+
+    .hover\:bg-blue-700:hover {
+        background-color: #1d4ed8 !important;
+    }
+
+    .shadow-blue-500\/50 {
+        box-shadow: 0 10px 15px -3px rgba(37, 99, 235, 0.5), 0 4px 6px -2px rgba(37, 99, 235, 0.05);
+    }
+
+    /* Rating Stars */
+    .rating-stars {
+        display: inline-flex;
+        gap: 5px;
+    }
+
+    .star {
+        font-size: 24px;
+        color: #ddd;
+        cursor: pointer;
+        transition: color 0.2s;
+    }
+
+        .star.active,
+        .star:hover {
+            color: #ffc107;
+        }
+
+    .star-display {
+        font-size: 18px;
+        color: #ffc107;
+    }
+
+    .progress-bar {
+        background-color: #ffc107;
+    }
+
+    .review-card {
+        border-left: 3px solid #2563eb;
+        transition: transform 0.2s;
+    }
+
+        .review-card:hover {
+            transform: translateX(5px);
+        }
+</style>
+
+<main class="container my-5 flex-grow-1">
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <i class="fas fa-check-circle"></i> @TempData["Success"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="fas fa-exclamation-circle"></i> @TempData["Error"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    <!-- Thông tin sản phẩm -->
+    <div class="mx-auto bg-white rounded-4 card-shadow overflow-hidden mb-4" style="max-width: 1200px;">
+        <div class="row g-0">
+            <div class="col-lg-4 p-4 p-sm-5 bg-light d-flex flex-column align-items-center justify-content-center">
+                <div class="w-100 mb-4 rounded-3 overflow-hidden shadow-lg" style="max-width: 250px;">
+                    <img src="~/HinhSP/@Model.AnhBia" alt="@Model.TenSach" class="img-fluid w-100 h-auto object-fit-cover">
+                </div>
+                <div class="text-center w-100">
+                    <p class="fs-2 fw-bolder text-danger mb-1">
+                        @string.Format("{0:N0} VNĐ", @Model.GiaBan)
+                    </p>
+                    <!-- Thay dòng này -->
+                    <a href="@Url.Action("ThemGioHang","Home",new { @ms = Model.MaSach, @strURL = Request.Url.ToString()})"
+                       class="btn bg-blue-600 text-white fw-bold w-100 py-3 mb-3 shadow-blue-500/50">
+                        <i class="fas fa-shopping-cart me-2"></i>MUA NGAY
+                    </a>
+                    </a>
+                    <a href="~/Home/SanPham" class="btn btn-outline-primary fw-bold w-100 py-3">
+                        MUA TIẾP
+                    </a>
+                </div>
+            </div>
+            <div class="col-lg-8 p-4 p-sm-5">
+                <span class="badge text-bg-warning text-uppercase fw-semibold py-1 px-3 mb-2">
+                    @Model.THELOAI.TenTheLoai
+                </span>
+                <h2 class="fs-2 fw-semibold text-primary mb-4">@Model.TenSach</h2>
+                <p class="fs-5 text-secondary mb-5">
+                    Tác giả: <span class="fw-semibold text-dark">@Model.TACGIA.TenTacGia</span> |
+                    Nhà xuất bản: @Model.NHAXUATBAN.TenNXB
+                </p>
+
+                <!-- Hiển thị rating -->
+                @if (ViewBag.TongDanhGia > 0)
+                {
+                    <div class="mb-4 d-flex align-items-center gap-3">
+                        <div class="d-flex align-items-center">
+                            <span class="fs-3 fw-bold text-warning me-2">@ViewBag.DiemTrungBinh.ToString("0.0")</span>
+                            <span class="text-muted">/5</span>
+                        </div>
+                        <div>
+                            @for (int i = 1; i <= 5; i++)
+                            {
+                                if (i <= Math.Round((double)ViewBag.DiemTrungBinh))
+                                {
+                                    <i class="fas fa-star star-display"></i>
+                                }
+                                else
+                                {
+                                    <i class="far fa-star star-display"></i>
+                                }
+                            }
+                        </div>
+                        <span class="text-muted">(@ViewBag.TongDanhGia đánh giá)</span>
+                    </div>
+                }
+
+                <div class="mb-5">
+                    <h3 class="fs-3 fw-bold text-dark mb-3 border-bottom border-primary pb-2">
+                        Mô Tả Sản Phẩm
+                    </h3>
+                    <p class="text-secondary lh-lg mb-3">@Model.MoTa</p>
+                </div>
+
+                <div>
+                    <h4 class="fs-4 fw-bold text-dark mb-3">Thông Số Kỹ Thuật</h4>
+                    <div class="row row-cols-2 g-2 small text-secondary">
+                        <div class="col"><span class="fw-semibold">Loại bìa:</span> Bìa mềm</div>
+                        <div class="col"><span class="fw-semibold">Năm xuất bản:</span> @Model.NamXuatBan</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Phần đánh giá -->
+    <div class="mx-auto bg-white rounded-4 card-shadow p-4 p-sm-5" style="max-width: 1200px;">
+        <h3 class="fs-3 fw-bold text-dark mb-4">
+            <i class="fas fa-star text-warning me-2"></i>Đánh giá sản phẩm
+        </h3>
+
+        @if (ViewBag.TongDanhGia > 0)
+        {
+            <!-- Tổng quan đánh giá -->
+            <div class="row mb-5">
+                <div class="col-md-4 text-center border-end">
+                    <div class="fs-1 fw-bold text-warning">@ViewBag.DiemTrungBinh.ToString("0.0")</div>
+                    <div class="mb-2">
+                        @for (int i = 1; i <= 5; i++)
+                        {
+                            if (i <= Math.Round((double)ViewBag.DiemTrungBinh))
+                            {
+                                <i class="fas fa-star star-display"></i>
+                            }
+                            else
+                            {
+                                <i class="far fa-star star-display"></i>
+                            }
+                        }
+                    </div>
+                    <div class="text-muted">(0 đánh giá)</div>
+                </div>
+
+                <div class="col-md-8">
+                    @for (int i = 5; i >= 1; i--)
+                    {
+                        int soLuong = ViewBag.ThongKeSao[i];
+                        double phanTram = ViewBag.TongDanhGia > 0 ? (soLuong * 100.0 / ViewBag.TongDanhGia) : 0;
+
+                        <div class="d-flex align-items-center mb-2">
+                            <span class="me-2" style="min-width: 50px;">@i sao</span>
+                            <div class="progress flex-grow-1 me-2" style="height: 10px;">
+                                <div class="progress-bar" style="width: @phanTram%"></div>
+                            </div>
+                            <span class="text-muted" style="min-width: 40px;">@phanTram.ToString("0")%</span>
+                        </div>
+                    }
+                </div>
+            </div>
+        }
+        else
+        {
+            <div class="text-center py-5 text-muted">
+                <i class="fas fa-comment-slash fa-3x mb-3"></i>
+                <p class="fs-5">Chưa có đánh giá nào cho sản phẩm này</p>
+            </div>
+        }
+
+        <!-- Form đánh giá (chỉ hiện nếu đã mua và giao thành công) -->
+        @if (ViewBag.DaMuaThanhCong && !ViewBag.DaDanhGia)
+        {
+            <div class="border rounded-3 p-4 mb-4 bg-light">
+                <h5 class="mb-3">Chỉ có thành viên mới có thể viết nhận xét. Vui lòng <a href="@Url.Action("DangNhap", "TaiKhoan")">đăng nhập</a> hoặc <a href="@Url.Action("DangKy", "TaiKhoan")">đăng ký.</a></h5>
+
+                @using (Html.BeginForm("ThemDanhGia", "Home", FormMethod.Post))
+                {
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="maSach" value="@Model.MaSach" />
+
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Đánh giá của bạn</label>
+                        <div class="rating-stars" id="ratingStars">
+                            @for (int i = 1; i <= 5; i++)
+                            {
+                                <i class="far fa-star star" data-value="@i"></i>
+                            }
+                        </div>
+                        <input type="hidden" name="soSao" id="soSaoInput" required />
+                        <div class="invalid-feedback">Vui lòng chọn số sao</div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Nhận xét của bạn</label>
+                        <textarea name="noiDung" class="form-control" rows="4"
+                                  placeholder="Chia sẻ trải nghiệm của bạn về sản phẩm này..." required></textarea>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary px-4">
+                        <i class="fas fa-paper-plane me-2"></i>Gửi đánh giá
+                    </button>
+                }
+            </div>
+        }
+        else if (ViewBag.DaDanhGia)
+        {
+            <div class="alert alert-info">
+                <i class="fas fa-info-circle me-2"></i>
+                Bạn đã đánh giá sản phẩm này rồi. Bạn có thể chỉnh sửa đánh giá bên dưới.
+            </div>
+        }
+        else if (Session["UserID"] == null)
+        {
+            <div class="alert alert-warning">
+                <i class="fas fa-exclamation-triangle me-2"></i>
+                Vui lòng <a href="@Url.Action("DangNhap", "TaiKhoan")" class="alert-link">đăng nhập</a> để đánh giá sản phẩm.
+            </div>
+        }
+        else if (!ViewBag.DaMuaThanhCong)
+        {
+            <div class="alert alert-warning">
+                <i class="fas fa-shopping-bag me-2"></i>
+                Bạn cần mua và nhận hàng thành công để có thể đánh giá sản phẩm này.
+            </div>
+        }
+
+        <!-- Danh sách đánh giá -->
+        @if (ViewBag.DanhGias != null && ((List<Nhom06_QuanLyBanSah.Models.DANHGIA>)ViewBag.DanhGias).Any())
+        {
+            <h5 class="fw-bold mb-3 mt-5">Các đánh giá khác</h5>
+
+            foreach (var dg in (List<Nhom06_QuanLyBanSah.Models.DANHGIA>)ViewBag.DanhGias)
+            {
+                <div class="review-card border rounded-3 p-4 mb-3 bg-light">
+                    <div class="d-flex justify-content-between align-items-start mb-2">
+                        <div>
+                            <strong class="text-primary">@dg.TAIKHOAN.HoTen</strong>
+                            <div class="mt-1">
+                                @for (int i = 1; i <= 5; i++)
+                                {
+                                    if (i <= dg.SoSao)
+                                    {
+                                        <i class="fas fa-star text-warning"></i>
+                                    }
+                                    else
+                                    {
+                                        <i class="far fa-star text-warning"></i>
+                                    }
+                                }
+                            </div>
+                        </div>
+                        <div class="text-end">
+                            <small class="text-muted">@dg.NgayDanhGia</small>
+                            @if (Session["UserID"] != null && (int)Session["UserID"] == dg.UserID)
+                            {
+                                <button class="btn btn-sm btn-danger ms-2" onclick="xoaDanhGia(@dg.MaDanhGia)">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            }
+                        </div>
+                    </div>
+                    <p class="mb-0 text-secondary">@dg.NoiDung</p>
+                </div>
+            }
+        }
+    </div>
+</main>
+
+<script>
+    // Xử lý rating stars
+    document.addEventListener('DOMContentLoaded', function() {
+        const stars = document.querySelectorAll('.rating-stars .star');
+        const input = document.getElementById('soSaoInput');
+
+        stars.forEach(star => {
+            star.addEventListener('click', function() {
+                const value = this.getAttribute('data-value');
+                input.value = value;
+
+                stars.forEach(s => {
+                    if (parseInt(s.getAttribute('data-value')) <= parseInt(value)) {
+                        s.classList.remove('far');
+                        s.classList.add('fas', 'active');
+                    } else {
+                        s.classList.remove('fas', 'active');
+                        s.classList.add('far');
+                    }
+                });
+            });
+
+            star.addEventListener('mouseover', function() {
+                const value = this.getAttribute('data-value');
+                stars.forEach(s => {
+                    if (parseInt(s.getAttribute('data-value')) <= parseInt(value)) {
+                        s.classList.add('active');
+                    } else {
+                        s.classList.remove('active');
+                    }
+                });
+            });
+        });
+
+        document.querySelector('.rating-stars').addEventListener('mouseout', function() {
+            const currentValue = input.value;
+            stars.forEach(s => {
+                if (currentValue && parseInt(s.getAttribute('data-value')) <= parseInt(currentValue)) {
+                    s.classList.add('active');
+                } else {
+                    s.classList.remove('active');
+                }
+            });
+        });
+    });
+
+    // Xóa đánh giá
+    function xoaDanhGia(maDanhGia) {
+        if (confirm('Bạn có chắc muốn xóa đánh giá này?')) {
+            fetch('@Url.Action("XoaDanhGia", "Home")', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ maDanhGia: maDanhGia })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert(data.message);
+                    window.location.href = data.redirectUrl;
+                } else {
+                    alert(data.message);
+                }
+            })
+            .catch(error => {
+                alert('Đã xảy ra lỗi!');
+            });
+        }
+    }
+</script>

@@ -1,0 +1,218 @@
+﻿
+@{
+    ViewBag.Title = "LienHe";
+    Layout = "~/Views/Shared/_LayoutPage1.cshtml";
+}
+
+<style>
+    /* Style cho các khối thông tin */
+    .info-card {
+        border: none;
+        border-radius: 1rem;
+        transition: transform 0.3s;
+    }
+
+        .info-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+        }
+
+    .icon-box {
+        width: 70px;
+        height: 70px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        background-color: var(--bs-primary-bg-subtle);
+        color: var(--bs-primary);
+        font-size: 2rem;
+        margin-bottom: 1rem;
+    }
+    /* Style cho Form */
+    .contact-form {
+        border-radius: 1rem;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+    }
+</style>
+
+
+<main class="container my-5 flex-grow-1">
+
+
+
+        <!-- Cột phải: NỘI DUNG CHÍNH (Banner, Sản phẩm nổi bật) -->
+        <h1 class="display-5 fw-bold text-primary mb-4 border-bottom pb-2 text-center">Liên Hệ Với ALPHA BOOK</h1>
+        <p class="lead text-center text-muted mb-5">
+            Chúng tôi luôn sẵn lòng lắng nghe ý kiến và hỗ trợ mọi thắc mắc của bạn.
+        </p>
+
+        <div class="row g-4 mb-5">
+            <!-- Thông tin liên hệ chi tiết -->
+            <div class="col-lg-4">
+                <div class="card info-card text-center h-100 p-4 bg-white">
+                    <div class="icon-box mx-auto">
+                        <i class="fas fa-map-marker-alt"></i>
+                    </div>
+                    <h5 class="fw-bold text-dark">Địa Chỉ Cửa Hàng</h5>
+                    <p class="text-muted mb-0">
+                        298 Đường 3/2, Phường 12, Quận 10, TP. Hồ Chí Minh
+                    </p>
+                    <p class="text-primary fw-semibold small mt-2">Giờ mở cửa: 8h00 - 22h00 (Tất cả các ngày)</p>
+                </div>
+            </div>
+
+            <div class="col-lg-4">
+                <div class="card info-card text-center h-100 p-4 bg-white">
+                    <div class="icon-box mx-auto">
+                        <i class="fas fa-phone"></i>
+                    </div>
+                    <h5 class="fw-bold text-dark">Điện Thoại Hỗ Trợ</h5>
+                    <p class="text-muted mb-0">
+                        <span class="fw-semibold">Tư vấn mua hàng:</span> (028) 123 4567
+                    </p>
+                    <p class="text-muted mb-0">
+                        <span class="fw-semibold">Hotline:</span> 0901 987 654
+                    </p>
+                    <p class="text-primary fw-semibold small mt-2">Hãy gọi cho chúng tôi bất cứ lúc nào!</p>
+                </div>
+            </div>
+
+            <div class="col-lg-4">
+                <div class="card info-card text-center h-100 p-4 bg-white">
+                    <div class="icon-box mx-auto">
+                        <i class="fas fa-envelope"></i>
+                    </div>
+                    <h5 class="fw-bold text-dark">Email</h5>
+                    <p class="text-muted mb-0">
+                        <span class="fw-semibold">Hỗ trợ:</span> support@alphabook.vn
+                    </p>
+                    <p class="text-muted mb-0">
+                        <span class="fw-semibold">Liên hệ công việc:</span> contact@alphabook.vn
+                    </p>
+                    <p class="text-primary fw-semibold small mt-2">Chúng tôi sẽ phản hồi trong vòng 24 giờ.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="row g-5">
+
+            <!-- Biểu mẫu Liên hệ -->
+            <div class="col-lg-6">
+                <div class="contact-form bg-white p-4 p-md-5">
+                    <h2 class="fs-3 fw-bold mb-4 text-primary">Gửi Yêu Cầu Cho Chúng Tôi</h2>
+                    <form id="contactForm">
+                        <div class="mb-3">
+                            <label for="name" class="form-label fw-medium">Họ và Tên <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control rounded-pill" id="name" required placeholder="Nhập họ và tên của bạn">
+                        </div>
+                        <div class="mb-3">
+                            <label for="email" class="form-label fw-medium">Email <span class="text-danger">*</span></label>
+                            <input type="email" class="form-control rounded-pill" id="email" required placeholder="Nhập địa chỉ email của bạn">
+                        </div>
+                        <div class="mb-3">
+                            <label for="subject" class="form-label fw-medium">Chủ đề</label>
+                            <input type="text" class="form-control rounded-pill" id="subject" placeholder="Chủ đề bạn muốn liên hệ">
+                        </div>
+                        <div class="mb-3">
+                            <label for="message" class="form-label fw-medium">Nội dung <span class="text-danger">*</span></label>
+                            <textarea class="form-control rounded-3" id="message" rows="5" required placeholder="Chi tiết nội dung bạn muốn gửi"></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-lg w-100 fw-bold rounded-pill mt-3 shadow-sm">
+                            <i class="fas fa-paper-plane me-2"></i>
+                            Gửi Yêu Cầu
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Bản đồ -->
+            <div class="col-lg-6">
+                <h2 class="fs-3 fw-bold mb-4 text-secondary">Vị Trí Cửa Hàng</h2>
+                <div class="ratio ratio-4x3 rounded-3 shadow-lg overflow-hidden">
+                    <!-- Placeholder cho Google Maps, bạn có thể nhúng iframe thực tế tại đây -->
+                    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+                    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+                    <div id="map" style="height: 400px; width: 100%;"></div>
+                    <script>
+                        // Tọa độ ví dụ (TP.HCM)
+                        var map = L.map('map').setView([10.762622, 106.660172], 13);
+
+                        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                            attribution: '&copy; OpenStreetMap contributors'
+                        }).addTo(map);
+
+                        L.marker([10.762622, 106.660172]).addTo(map)
+                            .bindPopup('Nhà sách của bạn ở đây!')
+                            .openPopup();
+                    </script>
+                </div>
+            </div>
+        </div>
+  
+</main>
+
+
+
+<script>
+        document.getElementById('contactForm').addEventListener('submit', function(event) {
+            event.preventDefault(); // Ngăn chặn form submit thực tế
+
+            // Lấy giá trị form
+            const name = document.getElementById('name').value;
+            const email = document.getElementById('email').value;
+            const message = document.getElementById('message').value;
+
+            // Kiểm tra các trường bắt buộc
+            if (!name || !email || !message) {
+                showCustomMessage('Vui lòng điền đầy đủ các trường bắt buộc!', 'danger');
+                return;
+            }
+
+            // Giả lập gửi dữ liệu thành công
+            showCustomMessage(`Cảm ơn ${name}! Yêu cầu của bạn đã được gửi. Chúng tôi sẽ phản hồi qua email ${email} sớm nhất.`, 'success');
+
+            // Xóa nội dung form sau khi gửi
+            document.getElementById('contactForm').reset();
+        });
+
+        // Hàm hiển thị thông báo tùy chỉnh (dùng Toast/Alert)
+        function showCustomMessage(message, type) {
+            const messageContainer = document.getElementById('custom-message-container');
+
+            // Tạo element thông báo
+            const alertDiv = document.createElement('div');
+            alertDiv.className = `alert alert-${type === 'success' ? 'success' : 'danger'} alert-dismissible fade show fixed-top mx-auto mt-3 shadow-lg`;
+            alertDiv.setAttribute('role', 'alert');
+            alertDiv.style.maxWidth = '400px';
+            alertDiv.style.zIndex = '2000';
+            alertDiv.style.left = '0';
+            alertDiv.style.right = '0';
+
+            alertDiv.innerHTML = `
+                <strong>Thông báo:</strong> ${message}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            `;
+
+            // Đảm bảo container tồn tại
+            if (!messageContainer) {
+                const container = document.createElement('div');
+                container.id = 'custom-message-container';
+                document.body.prepend(container);
+                container.appendChild(alertDiv);
+            } else {
+                messageContainer.appendChild(alertDiv);
+            }
+
+            // Tự động đóng sau 5 giây
+            setTimeout(() => {
+                const bsAlert = new bootstrap.Alert(alertDiv);
+                bsAlert.close();
+            }, 5000);
+        }
+</script>
+
+
+
+

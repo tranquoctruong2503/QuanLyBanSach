@@ -1,0 +1,66 @@
+﻿@{
+    ViewBag.Title = "Đăng nhập";
+    Layout = "~/Views/Shared/_LayoutPage1.cshtml";
+}
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger">
+        @TempData["Error"]
+    </div>
+}
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-5 col-md-7">
+            <div class="card shadow-lg border-0">
+                <div class="card-body p-5">
+                    <h2 class="text-center text-primary mb-4">
+                        <i class="fas fa-sign-in-alt me-2"></i>Đăng Nhập
+                    </h2>
+
+                    @if (TempData["Success"] != null)
+                    {
+                        <div class="alert alert-success">
+                            <i class="fas fa-check-circle me-2"></i>@TempData["Success"]
+                        </div>
+                    }
+
+                    @if (ViewBag.Error != null)
+                    {
+                        <div class="alert alert-danger">
+                            <i class="fas fa-exclamation-circle me-2"></i>@ViewBag.Error
+                        </div>
+                    }
+
+                    @using (Html.BeginForm("DangNhap", "TaiKhoan", FormMethod.Post))
+                    {
+                        @Html.AntiForgeryToken()
+
+                        <div class="mb-3">
+                            <label class="form-label"><i class="fas fa-envelope me-1"></i>Email</label>
+                            <input type="email" name="Email" class="form-control" placeholder="Nhập email" required />
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="form-label"><i class="fas fa-lock me-1"></i>Mật khẩu</label>
+                            <input type="password" name="MatKhau" class="form-control" placeholder="Nhập mật khẩu" required />
+
+                        </div>
+
+                        <button type="submit" class="btn btn-primary w-100 py-2 mb-3">
+                            <i class="fas fa-sign-in-alt me-2"></i>Đăng Nhập
+                        </button>
+
+                        <div class="text-center">
+                            <p class="mb-0">
+                                Chưa có tài khoản?
+                                <a href="@Url.Action("DangKy", "TaiKhoan")" class="text-primary fw-bold">Đăng ký ngay</a>
+                            </p>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+

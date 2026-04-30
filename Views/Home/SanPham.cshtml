@@ -1,0 +1,127 @@
+﻿
+@{
+    ViewBag.Title = "SanPham";
+    Layout = "~/Views/Shared/_LayoutPage1.cshtml";
+    int currentPage = ViewBag.CurrentPage;
+    int totalPages = ViewBag.TotalPages;
+}
+
+@using Nhom06_QuanLyBanSah.Models
+@model  List<SACH>
+<style>
+    .product-card {
+        transition: all 0.3s ease-in-out;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+        /* Thay thế rounded-xl */
+        border-radius: 1rem !important;
+    }
+
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+</style>
+
+<main class="container my-5 flex-grow-1">
+    <div class="row ">
+
+        <!-- Cột trái: DANH MỤC SẢN PHẨM (Sitemap/Categories) -->
+        @RenderPage("~/Views/Shared/Partial.cshtml")
+
+
+
+
+        <!-- Cột phải: NỘI DUNG CHÍNH (Banner, Sản phẩm nổi bật) -->
+        <section class="col-lg-9">
+            <div class="d-flex justify-content-between align-items-center mb-4 p-3 bg-white rounded-4 shadow-sm">
+                <p class="text-secondary fw-medium mb-0">Tìm thấy <span class="text-primary fw-bold">@ViewBag.SLSach</span> sản phẩm</p>
+                <div>
+                    <label for="sort" class="text-secondary me-2">Sắp xếp theo:</label>
+                    <select id="sort" class="form-select d-inline-block w-auto border border-gray-300">
+                        <option value="name_asc" @(ViewBag.CurrentSort == "name_asc" ? "selected" : "")>A - Z</option>
+                        <option value="name_desc" @(ViewBag.CurrentSort == "name_desc" ? "selected" : "")>Z - A</option>
+                        <option value="price_asc" @(ViewBag.CurrentSort == "price_asc" ? "selected" : "")>Giá: Thấp đến Cao</option>
+                        <option value="price_desc" @(ViewBag.CurrentSort == "price_desc" ? "selected" : "")>Giá: Cao đến Thấp</option>
+                    </select>
+                </div>
+            </div>
+            @if (ViewBag.ThongBao != null)
+            {
+                <div class="alert alert-warning text-center mt-3">
+                    @ViewBag.ThongBao
+                </div>
+            }
+            <div class="row row-cols-2 row-cols-md-3 row-cols-xl-4 g-4">
+                @foreach (var item in Model)
+                {
+
+                    <div class="col">
+                        <div class="product-card bg-white p-3 d-flex flex-column justify-content-between h-100">
+                            <div class="flex-grow">
+                                <img src="~/HinhSP/@item.AnhBia" alt="@item.TenSach" class="img-fluid rounded mb-3" />
+                                <span class="badge text-bg-primary bg-opacity-10 text-primary fw-semibold text-uppercase py-1 px-2 mb-2">
+                                    @item.THELOAI.TenTheLoai
+                                </span>
+                                <h3 class="fs-5 fw-bold text-dark mt-2 mb-1 line-clamp-2">@item.TenSach</h3>
+                                <p class="small text-muted mb-2">Tác giả: @item.TACGIA.TenTacGia</p>
+                            </div>
+                            <div class="pt-2 border-top mt-auto">
+                                <p class="fs-4 fw-bold text-danger mb-0">@string.Format("{0:N0} VNĐ", item.GiaBan)</p>
+                                <a href="@Url.Action("ChiTietSanPham", "Home", new { @ms = item.MaSach })"
+                                   class="btn btn-primary w-100 small fw-semibold">
+                                    Xem chi tiết
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                }
+
+
+
+            </div>
+
+
+            @*phan trang*@
+            <nav class="mt-5">
+                <ul class="pagination justify-content-center shadow-sm rounded-pill p-2 bg-white">
+                    <!-- Nút Previous -->
+                    <li class="page-item @(currentPage == 1 ? "disabled" : "")">
+                        <a class="page-link rounded-pill mx-1"
+                           href="@Url.Action("SanPham", new { page = currentPage - 1, sortOrder = ViewBag.CurrentSort })"
+                           aria-label="Previous">
+                            <span aria-hidden="true">&laquo;</span>
+                        </a>
+                    </li>
+
+                    <!-- Các số trang -->
+                    @for (int i = 1; i <= totalPages; i++)
+                    {
+                        <li class="page-item @(currentPage == i ? "active" : "")">
+                            <a class="page-link rounded-pill mx-1"
+                               href="@Url.Action("SanPham", new { page = i, sortOrder = ViewBag.CurrentSort })">@i</a>
+                        </li>
+                    }
+
+                    <!-- Nút Next -->
+                    <li class="page-item @(currentPage == totalPages ? "disabled" : "")">
+                        <a class="page-link rounded-pill mx-1"
+                           href="@Url.Action("SanPham", new { page = currentPage + 1, sortOrder = ViewBag.CurrentSort })"
+                           aria-label="Next">
+                            <span aria-hidden="true">&raquo;</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </section>
+    </div>
+    <script>
+    document.getElementById("sort").addEventListener("change", function () {
+        const sort = this.value;
+        const params = new URLSearchParams(window.location.search);
+        params.set("sortOrder", sort);
+        params.set("page", 1); // khi đổi sắp xếp, quay về trang đầu
+        window.location.search = params.toString();
+    });
+    </script>
+</main>
+

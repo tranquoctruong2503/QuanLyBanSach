@@ -1,0 +1,144 @@
+﻿@model Nhom06_QuanLyBanSah.Models.SACH
+
+@{
+    ViewBag.Title = "Chi Tiết Sách";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<div class="container-fluid">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="text-primary fw-bold mb-0">
+            <i class="fas fa-book-open me-2"></i>Chi Tiết Sách
+        </h2>
+        <div>
+            <a href="@Url.Action("SuaSach", "Admin", new { id = Model.MaSach })" class="btn btn-primary">
+                <i class="fas fa-edit me-2"></i>Chỉnh Sửa
+            </a>
+            <a href="@Url.Action("QuanLySach", "Admin")" class="btn btn-outline-primary">
+                <i class="fas fa-arrow-left me-2"></i>Quay Lại
+            </a>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Cột trái: Thông tin sách -->
+        <div class="col-lg-8">
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-white">
+                    <h5 class="mb-0 text-primary">Thông Tin Sách</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-4 text-center mb-3">
+                            <img src="~/HinhSP/@Model.AnhBia" alt="@Model.TenSach"
+                                 class="img-fluid rounded shadow" style="max-height: 400px;" />
+                        </div>
+                        <div class="col-md-8">
+                            <table class="table table-borderless">
+                                <tr>
+                                    <td class="fw-bold" style="width: 180px;">Mã Sách:</td>
+                                    <td>@Model.MaSach</td>
+                                </tr>
+                                <tr>
+                                    <td class="fw-bold">Tên Sách:</td>
+                                    <td><h5 class="text-primary mb-0">@Model.TenSach</h5></td>
+                                </tr>
+                                <tr>
+                                    <td class="fw-bold">Thể Loại:</td>
+                                    <td><span class="badge bg-info">@Model.THELOAI.TenTheLoai</span></td>
+                                </tr>
+                                <tr>
+                                    <td class="fw-bold">Tác Giả:</td>
+                                    <td>@Model.TACGIA.TenTacGia</td>
+                                </tr>
+                                <tr>
+                                    <td class="fw-bold">Nhà Xuất Bản:</td>
+                                    <td>@Model.NHAXUATBAN.TenNXB</td>
+                                </tr>
+                                <tr>
+                                    <td class="fw-bold">Năm Xuất Bản:</td>
+                                    <td>@Model.NamXuatBan</td>
+                                </tr>
+                                <tr>
+                                    <td class="fw-bold">Giá Bán:</td>
+                                    <td><h4 class="text-danger mb-0">@string.Format("{0:N0}", Model.GiaBan) đ</h4></td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+
+                    @if (!string.IsNullOrEmpty(Model.MoTa))
+                    {
+                        <hr />
+                        <div class="mt-3">
+                            <h6 class="fw-bold mb-2">Mô Tả:</h6>
+                            <p class="text-muted">@Model.MoTa</p>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <!-- Cột phải: Thống kê -->
+        <div class="col-lg-4">
+            <!-- Thống kê kho -->
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-white">
+                    <h5 class="mb-0 text-primary">Thống Kê Kho</h5>
+                </div>
+                <div class="card-body">
+                    <div class="d-flex justify-content-between mb-3 p-3 bg-light rounded">
+                        <div>
+                            <small class="text-muted">Số Lượng Tồn</small>
+                            <h4 class="mb-0 fw-bold
+                                @(Model.SoLuongTon <= 0 ? "text-danger" :
+                                  Model.SoLuongTon < 10 ? "text-warning" : "text-success")">
+                                @Model.SoLuongTon
+                            </h4>
+                        </div>
+                        <div class="text-end">
+                            <small class="text-muted">Đã Bán</small>
+                            <h4 class="mb-0 fw-bold text-info">@(Model.SoLuongBan ?? 0)</h4>
+                        </div>
+                    </div>
+
+                    @if (Model.SoLuongTon <= 0)
+                    {
+                        <div class="alert alert-danger mb-0">
+                            <i class="fas fa-exclamation-triangle me-2"></i>Hết hàng
+                        </div>
+                    }
+                    else if (Model.SoLuongTon < 10)
+                    {
+                        <div class="alert alert-warning mb-0">
+                            <i class="fas fa-exclamation-circle me-2"></i>Sắp hết hàng
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="alert alert-success mb-0">
+                            <i class="fas fa-check-circle me-2"></i>Còn hàng
+                        </div>
+                    }
+                </div>
+            </div>
+
+            <!-- Thống kê bán hàng -->
+            <div class="card shadow-sm">
+                <div class="card-header bg-white">
+                    <h5 class="mb-0 text-primary">Thống Kê Bán Hàng</h5>
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <small class="text-muted">Tổng Số Lượng Đã Bán</small>
+                        <h4 class="fw-bold text-success">@ViewBag.SoLuongDaBan</h4>
+                    </div>
+                    <div>
+                        <small class="text-muted">Doanh Thu</small>
+                        <h4 class="fw-bold text-danger">@string.Format("{0:N0}", ViewBag.DoanhThu) đ</h4>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,83 @@
+﻿@model List<Nhom06_QuanLyBanSah.Models.GioHang>
+@{
+    ViewBag.Title = "Đặt Hàng";
+    Layout = "~/Views/Shared/_LayoutPage1.cshtml";
+}
+
+<div class="container mt-5">
+    <h2 class="mb-4 text-primary">Đặt Hàng</h2>
+
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-danger">@TempData["Error"]</div>
+    }
+
+    <div class="row">
+        <!-- Form nhập thông tin giao hàng -->
+        <div class="col-md-5">
+            <div class="card p-3 mb-4">
+                <h5>Thông tin giao hàng</h5>
+
+                @using (Html.BeginForm("DatHang", "Home", FormMethod.Post))
+                {
+                    @Html.AntiForgeryToken()
+
+                    <div class="mb-3">
+                        <label class="form-label">Địa chỉ giao hàng:</label>
+                        <input type="text" name="diaChiGiaoHang" class="form-control" required />
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Số điện thoại:</label>
+                        <input type="text" name="soDienThoai" class="form-control" required />
+                    </div>
+
+                    <button type="submit" class="btn btn-primary w-100 mt-2">Xác nhận đặt hàng</button>
+                }
+            </div>
+        </div>
+
+        <!-- Giỏ hàng -->
+        <div class="col-md-7">
+            <div class="card p-3">
+                <h5>Đơn hàng của bạn</h5>
+                <table class="table table-striped table-bordered mt-3">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>Sách</th>
+                            <th>Số lượng</th>
+                            <th>Giá</th>
+                            <th>Thành tiền</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @{
+                            decimal tongTien = 0;
+                        }
+
+                        @foreach (var item in Model)
+                        {
+                            decimal thanhTien = (decimal)item.dDonGia * item.iSoLuong;
+                            tongTien += thanhTien;
+
+                            <tr>
+                                <td>@item.sTenSach</td>
+                                <td>@item.iSoLuong</td>
+                                <td>@String.Format("{0:N0} VNĐ", item.dDonGia)</td>
+                                <td>@String.Format("{0:N0} VNĐ", thanhTien)</td>
+                            </tr>
+                        }
+
+                        <tr class="table-warning">
+                            <td colspan="2" class="text-center"><b>Tổng tiền</b></td>
+                            <td colspan="2" class="text-center text-danger">
+                                <b>@String.Format("{0:N0} VNĐ", tongTien)</b>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+

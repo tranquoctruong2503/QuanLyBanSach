@@ -1,0 +1,302 @@
+﻿@model List<Nhom06_QuanLyBanSah.Models.HOANTRA>
+
+@{
+    ViewBag.Title = "Quản Lý Yêu Cầu Hủy Đơn";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<div class="container-fluid">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="text-primary fw-bold mb-0">
+            <i class="fas fa-undo me-2"></i>Quản Lý Yêu Cầu Hủy Đơn
+        </h2>
+    </div>
+
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show">
+            <i class="fas fa-check-circle me-2"></i>@TempData["Success"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    <!-- Thống kê -->
+    <div class="row g-3 mb-4">
+        <div class="col-md-4">
+            <div class="card bg-warning text-white">
+                <div class="card-body">
+                    <h6>Chờ Xử Lý</h6>
+                    <h3 class="mb-0">@Model.Count(x => x.TrangThai == "Chờ xử lý")</h3>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card bg-success text-white">
+                <div class="card-body">
+                    <h6>Đã Xử Lý</h6>
+                    <h3 class="mb-0">@Model.Count(x => x.TrangThai == "Đã xử lý")</h3>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card bg-danger text-white">
+                <div class="card-body">
+                    <h6>Từ Chối</h6>
+                    <h3 class="mb-0">@Model.Count(x => x.TrangThai == "Từ chối")</h3>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bộ lọc -->
+    <div class="card shadow-sm mb-4">
+        <div class="card-body">
+            <form method="get" class="row g-3">
+                <div class="col-md-4">
+                    <input type="text" name="search" class="form-control"
+                           placeholder="Tìm theo mã đơn, tên KH hoặc lý do..." value="@ViewBag.Search" />
+                </div>
+                <div class="col-md-3">
+                    <select name="trangThai" class="form-select">
+                        <option value="">Tất cả trạng thái</option>
+                        <option value="Chờ xử lý" @(ViewBag.TrangThai == "Chờ xử lý" ? "selected" : "")>Chờ xử lý</option>
+                        <option value="Đã xử lý" @(ViewBag.TrangThai == "Đã xử lý" ? "selected" : "")>Đã xử lý</option>
+                        <option value="Từ chối" @(ViewBag.TrangThai == "Từ chối" ? "selected" : "")>Từ chối</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-search me-1"></i>Tìm
+                    </button>
+                    <a href="@Url.Action("QuanLyHoanTra", "Admin")" class="btn btn-outline-secondary ms-2">
+                        <i class="fas fa-redo me-1"></i>Làm mới
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Bảng danh sách -->
+    <div class="card shadow-sm">
+        <div class="card-header bg-white">
+            <h5 class="mb-0 text-primary">Danh Sách Yêu Cầu Hủy</h5>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Mã YC</th>
+                            <th>Mã Đơn</th>
+                            <th>Khách Hàng</th>
+                            <th>Lý Do</th>
+                            <th>Ngày YC</th>
+                            <th>Trạng Thái</th>
+                            <th class="text-center">Thao Tác</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model != null && Model.Any())
+                        {
+                            foreach (var ht in Model)
+                            {
+                                <tr>
+                                    <td><strong class="text-primary">#@ht.MaHoanTra</strong></td>
+                                    <td>
+                                        <a href="@Url.Action("ChiTietDonHang", "Admin", new { id = ht.MaDonHang })"
+                                           class="text-decoration-none">
+                                            #@ht.MaDonHang
+                                        </a>
+                                    </td>
+                                    <td>
+                                        <strong>@ht.DONHANG.TAIKHOAN.HoTen</strong><br />
+                                        <small class="text-muted">@ht.DONHANG.TAIKHOAN.DienThoai</small>
+                                    </td>
+                                    <td>
+                                        <small>@(ht.LyDo.Length > 50 ? ht.LyDo.Substring(0, 50) + "..." : ht.LyDo)</small>
+                                    </td>
+                                    <td><small>@ht.NgayYeuCau.Value.ToString("dd/MM/yyyy HH:mm")</small></td>
+                                    <td>
+                                        @switch (ht.TrangThai)
+                                        {
+                                            case "Chờ xử lý":
+                                                <span class="badge bg-warning">Chờ xử lý</span>
+                                                break;
+                                            case "Đã xử lý":
+                                                <span class="badge bg-success">Đã xử lý</span>
+                                                break;
+                                            case "Từ chối":
+                                                <span class="badge bg-danger">Từ chối</span>
+                                                break;
+                                            default:
+                                                <span class="badge bg-secondary">@ht.TrangThai</span>
+                                                break;
+                                        }
+                                    </td>
+                                    <td class="text-center">
+                                        @if (ht.TrangThai == "Chờ xử lý")
+                                        {
+                                            <button class="btn btn-sm btn-success me-1"
+                                                    onclick="xuLyYeuCau(@ht.MaHoanTra, 'chap_nhan', '@ht.DONHANG.TAIKHOAN.HoTen')"
+                                                    title="Chấp nhận">
+                                                <i class="fas fa-check"></i>
+                                            </button>
+                                            <button class="btn btn-sm btn-danger"
+                                                    onclick="xuLyYeuCau(@ht.MaHoanTra, 'tu_choi', '@ht.DONHANG.TAIKHOAN.HoTen')"
+                                                    title="Từ chối">
+                                                <i class="fas fa-times"></i>
+                                            </button>
+                                        }
+                                        else
+                                        {
+                                            <button class="btn btn-sm btn-info"
+                                                    onclick="xemChiTiet(@ht.MaHoanTra, '@ht.LyDo', '@ht.TrangThai', '@(ht.LyDo ?? "")', '@ht.NgayYeuCau.Value.ToString("dd/MM/yyyy HH:mm")', '@(ht.NgayYeuCau.HasValue ? ht.NgayYeuCau.Value.ToString("dd/MM/yyyy HH:mm") : "")')"
+                                                    title="Xem chi tiết">
+                                                <i class="fas fa-eye"></i>
+                                            </button>
+                                        }
+                                    </td>
+                                </tr>
+                            }
+                        }
+                        else
+                        {
+                            <tr>
+                                <td colspan="7" class="text-center text-muted py-4">
+                                    <i class="fas fa-inbox fa-3x mb-3 d-block"></i>
+                                    Không có yêu cầu nào
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Xử Lý -->
+<div class="modal fade" id="xuLyModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header" id="modalHeader">
+                <h5 class="modal-title" id="modalTitle"></h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p id="modalMessage"></p>
+                <div class="mb-3">
+                    <label class="form-label">Ghi chú (không bắt buộc):</label>
+                    <textarea id="ghiChu" class="form-control" rows="3" placeholder="Nhập ghi chú..."></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                <button type="button" class="btn" id="btnXacNhan" onclick="xacNhanXuLy()">Xác Nhận</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Chi Tiết -->
+<div class="modal fade" id="chiTietModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-info text-white">
+                <h5 class="modal-title"><i class="fas fa-info-circle me-2"></i>Chi Tiết Yêu Cầu</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <table class="table table-borderless">
+                    <tr>
+                        <td class="fw-bold" style="width: 150px;">Lý do:</td>
+                        <td id="detailLyDo"></td>
+                    </tr>
+                    <tr>
+                        <td class="fw-bold">Ngày yêu cầu:</td>
+                        <td id="detailNgayYC"></td>
+                    </tr>
+                    <tr>
+                        <td class="fw-bold">Trạng thái:</td>
+                        <td id="detailTrangThai"></td>
+                    </tr>
+                    <tr>
+                        <td class="fw-bold">Ngày xử lý:</td>
+                        <td id="detailNgayXL"></td>
+                    </tr>
+                    <tr>
+                        <td class="fw-bold">Ghi chú:</td>
+                        <td id="detailGhiChu"></td>
+                    </tr>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    var currentMaHoanTra = 0;
+    var currentHanhDong = '';
+
+    function xuLyYeuCau(maHoanTra, hanhDong, tenKH) {
+        currentMaHoanTra = maHoanTra;
+        currentHanhDong = hanhDong;
+
+        if (hanhDong === 'chap_nhan') {
+            $('#modalHeader').removeClass('bg-danger').addClass('bg-success text-white');
+            $('#modalTitle').html('<i class="fas fa-check-circle me-2"></i>Chấp Nhận Hủy Đơn');
+            $('#modalMessage').html(`Bạn có chắc muốn <strong>chấp nhận</strong> yêu cầu hủy đơn của <strong>${tenKH}</strong>?<br><small class="text-muted">Đơn hàng sẽ bị hủy và số lượng sách sẽ được hoàn lại kho.</small>`);
+            $('#btnXacNhan').removeClass('btn-danger').addClass('btn-success').text('Chấp Nhận');
+        } else {
+            $('#modalHeader').removeClass('bg-success').addClass('bg-danger text-white');
+            $('#modalTitle').html('<i class="fas fa-times-circle me-2"></i>Từ Chối Hủy Đơn');
+            $('#modalMessage').html(`Bạn có chắc muốn <strong>từ chối</strong> yêu cầu hủy đơn của <strong>${tenKH}</strong>?<br><small class="text-muted">Đơn hàng sẽ được chuyển sang trạng thái "Đã xác nhận".</small>`);
+            $('#btnXacNhan').removeClass('btn-success').addClass('btn-danger').text('Từ Chối');
+        }
+
+        $('#ghiChu').val('');
+        $('#xuLyModal').modal('show');
+    }
+
+    function xacNhanXuLy() {
+        var ghiChu = $('#ghiChu').val();
+
+        $.ajax({
+            url: '@Url.Action("XuLyYeuCauHuy", "Admin")',
+            type: 'POST',
+            data: {
+                maHoanTra: currentMaHoanTra,
+                hanhDong: currentHanhDong,
+                ghiChu: ghiChu
+            },
+            success: function(response) {
+                if (response.success) {
+                    alert(response.message);
+                    $('#xuLyModal').modal('hide');
+                    location.reload();
+                } else {
+                    alert(response.message);
+                }
+            },
+            error: function() {
+                alert('Có lỗi xảy ra! Vui lòng thử lại.');
+            }
+        });
+    }
+
+    function xemChiTiet(maHoanTra, lyDo, trangThai, ghiChu, ngayYC, ngayXL) {
+        $('#detailLyDo').text(lyDo);
+        $('#detailNgayYC').text(ngayYC);
+        $('#detailNgayXL').text(ngayXL || 'Chưa xử lý');
+        $('#detailGhiChu').text(ghiChu || 'Không có');
+
+        var badgeClass = trangThai === 'Đã xử lý' ? 'bg-success' : 'bg-danger';
+        $('#detailTrangThai').html(`<span class="badge ${badgeClass}">${trangThai}</span>`);
+
+        $('#chiTietModal').modal('show');
+    }
+</script>

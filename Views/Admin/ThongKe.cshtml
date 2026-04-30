@@ -1,0 +1,233 @@
+﻿@{
+    ViewBag.Title = "Thống Kê";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<style>
+    .stat-card {
+        border-radius: 15px;
+        padding: 25px;
+        position: relative;
+        overflow: hidden;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15) !important;
+        }
+
+    .stat-card-icon {
+        font-size: 3rem;
+        opacity: 0.3;
+        position: absolute;
+        right: 20px;
+        top: 50%;
+        transform: translateY(-50%);
+    }
+
+    .stat-card-content {
+        position: relative;
+        z-index: 1;
+    }
+
+    .stat-value {
+        font-size: 2rem;
+        font-weight: 700;
+        margin-bottom: 5px;
+    }
+
+    .stat-label {
+        font-size: 0.9rem;
+        opacity: 0.9;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .stat-change {
+        font-size: 0.85rem;
+        margin-top: 5px;
+    }
+
+    .filter-card {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border-radius: 15px;
+        padding: 25px;
+        color: white;
+    }
+
+        .filter-card .form-control,
+        .filter-card .form-select {
+            border-radius: 10px;
+            border: 2px solid rgba(255,255,255,0.3);
+            background: rgba(255,255,255,0.1);
+            color: white;
+            padding: 10px 15px;
+        }
+
+            .filter-card .form-control::placeholder {
+                color: rgba(255,255,255,0.7);
+            }
+
+            .filter-card .form-control:focus {
+                background: rgba(255,255,255,0.2);
+                border-color: rgba(255,255,255,0.5);
+                color: white;
+                box-shadow: none;
+            }
+
+        .filter-card label {
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: white;
+        }
+
+    .btn-filter {
+        border-radius: 10px;
+        padding: 10px 30px;
+        font-weight: 600;
+        border: none;
+        background: white;
+        color: #667eea;
+        transition: all 0.3s ease;
+    }
+
+        .btn-filter:hover {
+            background: #f8f9fa;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+    .btn-reset {
+        border-radius: 10px;
+        padding: 10px 30px;
+        font-weight: 600;
+        background: rgba(255,255,255,0.2);
+        color: white;
+        border: 2px solid white;
+        transition: all 0.3s ease;
+    }
+
+        .btn-reset:hover {
+            background: white;
+            color: #667eea;
+            transform: translateY(-2px);
+        }
+
+    .chart-card {
+        border-radius: 15px;
+        border: none;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+    }
+
+        .chart-card .card-header {
+            background: white;
+            border-bottom: 2px solid #f1f3f5;
+            border-radius: 15px 15px 0 0 !important;
+            padding: 20px;
+        }
+</style>
+
+<div class="container-fluid">
+    <!-- BỘ LỌC THỜI GIAN -->
+    <div class="filter-card mb-4">
+        <form method="get" action="@Url.Action("ThongKe", "Admin")" class="row g-3">
+            <div class="col-12">
+                <h4 class="mb-3">
+                    <i class="fas fa-filter me-2"></i>Bộ Lọc Thống Kê
+                </h4>
+            </div>
+
+            <div class="col-md-4">
+                <label class="form-label">
+                    <i class="fas fa-calendar-alt me-1"></i>Từ ngày
+                </label>
+                <input type="date" class="form-control" name="tuNgay"
+                       value="@ViewBag.TuNgay" max="@DateTime.Now.ToString("yyyy-MM-dd")">
+            </div>
+
+            <div class="col-md-4">
+                <label class="form-label">
+                    <i class="fas fa-calendar-check me-1"></i>Đến ngày
+                </label>
+                <input type="date" class="form-control" name="denNgay"
+                       value="@ViewBag.DenNgay" max="@DateTime.Now.ToString("yyyy-MM-dd")">
+            </div>
+
+            <div class="col-md-4 d-flex align-items-end gap-2">
+                <button type="submit" class="btn btn-filter flex-grow-1">
+                    <i class="fas fa-search me-2"></i>Lọc Dữ Liệu
+                </button>
+                <a href="@Url.Action("ThongKe", "Admin")" class="btn btn-reset">
+                    <i class="fas fa-redo me-1"></i>Đặt lại
+                </a>
+            </div>
+        </form>
+    </div>
+
+    <!-- THỐNG KÊ TỔNG QUAN -->
+    <div class="row g-4 mb-4">
+        <div class="col-xl-3 col-md-6">
+            <div class="stat-card shadow-sm" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">
+                <div class="stat-card-content">
+                    <div class="stat-label">Tổng Đơn Hàng</div>
+                    <div class="stat-value">@ViewBag.TongDonHang</div>
+                    <div class="stat-change">
+                        <i class="fas fa-arrow-up me-1"></i>
+                        Trong khoảng thời gian đã chọn
+                    </div>
+                </div>
+                <div class="stat-card-icon">
+                    <i class="fas fa-shopping-cart"></i>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6">
+            <div class="stat-card shadow-sm" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); color: white;">
+                <div class="stat-card-content">
+                    <div class="stat-label">Doanh Thu</div>
+                    <div class="stat-value">@ViewBag.TongDoanhThu.ToString("N0")đ</div>
+                    <div class="stat-change">
+                        <i class="fas fa-chart-line me-1"></i>
+                        Tổng doanh thu thực tế
+                    </div>
+                </div>
+                <div class="stat-card-icon">
+                    <i class="fas fa-dollar-sign"></i>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6">
+            <div class="stat-card shadow-sm" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); color: white;">
+                <div class="stat-card-content">
+                    <div class="stat-label">Tổng Sách</div>
+                    <div class="stat-value">@ViewBag.TongSach</div>
+                    <div class="stat-change">
+                        <i class="fas fa-book-open me-1"></i>
+                        Trong kho hiện tại
+                    </div>
+                </div>
+                <div class="stat-card-icon">
+                    <i class="fas fa-book"></i>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6">
+            <div class="stat-card shadow-sm" style="background: linear-gradient(135deg, #fa709a 0%, #fee140 100%); color: white;">
+                <div class="stat-card-content">
+                    <div class="stat-label">Khách Hàng</div>
+                    <div class="stat-value">@ViewBag.TongUser</div>
+                    <div class="stat-change">
+                        <i class="fas fa-user-plus me-1"></i>
+                        Tài khoản đã đăng ký
+                    </div>
+                </div>
+                <div class="stat-card-icon">
+                    <i class="fas fa-users"></i>
+                </div>
+            </div>
+        </div>
+    </div>

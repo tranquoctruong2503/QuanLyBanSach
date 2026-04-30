@@ -1,0 +1,81 @@
+﻿@model Nhom06_QuanLyBanSah.Models.TAIKHOAN
+
+@{
+    ViewBag.Title = "Thông tin cá nhân";
+    Layout = "~/Views/Shared/_LayoutPage1.cshtml";
+}
+
+<div class="container my-5">
+    <div class="row">
+        <div class="col-lg-8 mx-auto">
+            <div class="card shadow-lg border-0">
+                <div class="card-header bg-primary text-white">
+                    <h3 class="mb-0"><i class="fas fa-user-circle me-2"></i>Thông Tin Cá Nhân</h3>
+                </div>
+                <div class="card-body p-4">
+
+                    @if (ViewBag.Success != null)
+                    {
+                        <div class="alert alert-success">
+                            <i class="fas fa-check-circle me-2"></i>@ViewBag.Success
+                        </div>
+                    }
+
+                    @using (Html.BeginForm("ThongTinCaNhan", "TaiKhoan", FormMethod.Post, new { @class = "needs-validation" }))
+                    {
+                        @Html.AntiForgeryToken()
+                        @Html.HiddenFor(m => m.userID)
+                        @Html.HiddenFor(m => m.Email)
+                        @Html.HiddenFor(m => m.MatKhau)
+                        @Html.HiddenFor(m => m.Role)
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label fw-bold">Họ tên</label>
+                                @Html.TextBoxFor(m => m.HoTen, new { @class = "form-control" })
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label fw-bold">Email</label>
+                                <input type="text" class="form-control" value="@Model.Email" disabled />
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label fw-bold">Số điện thoại</label>
+                                @Html.TextBoxFor(m => m.DienThoai, new { @class = "form-control" })
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label fw-bold">Ngày sinh</label>
+                                @Html.TextBoxFor(m => m.NgaySinh, "{0:yyyy-MM-dd}", new { @class = "form-control", type = "date" })
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Giới tính</label>
+                            @Html.DropDownListFor(m => m.GioiTinh,
+                                new SelectList(new[] { "Nam", "Nữ", "Khác" }, Model.GioiTinh),
+                                new { @class = "form-select" })
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Địa chỉ</label>
+                            @Html.TextAreaFor(m => m.DiaChi, new { @class = "form-control", rows = "3" })
+                        </div>
+
+                        <div class="d-flex gap-2">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-save me-2"></i>Cập Nhật
+                            </button>
+                            <a href="@Url.Action("DoiMatKhau", "TaiKhoan")" class="btn btn-primary">
+                                <i class="fas fa-key me-2"></i>Đổi Mật Khẩu
+                            </a>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

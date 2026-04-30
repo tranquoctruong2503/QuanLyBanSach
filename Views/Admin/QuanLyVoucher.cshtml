@@ -1,0 +1,165 @@
+﻿@model IEnumerable<Nhom06_QuanLyBanSah.Models.VOUCHER>
+@{
+    ViewBag.Title = "Quản Lý Voucher";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<div class="container-fluid">
+    <h2 class="mb-4 text-primary fw-bold">
+        <i class="fas fa-ticket-alt me-2"></i>Quản Lý Voucher
+    </h2>
+
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show">
+            <i class="fas fa-check-circle me-2"></i>@TempData["Success"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show">
+            <i class="fas fa-exclamation-circle me-2"></i>@TempData["Error"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    <!-- Bộ lọc và nút thêm -->
+    <div class="card shadow-sm mb-4">
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-10">
+                    <form method="get" action="@Url.Action("QuanLyVoucher", "Admin")" class="row g-3">
+                        <div class="col-md-4">
+                            <label class="form-label">Trạng thái</label>
+                            <select name="trangThai" class="form-select" onchange="this.form.submit()">
+                                <option value="">Tất cả</option>
+                                <option value="hoatdong" @(ViewBag.TrangThaiSelected == "hoatdong" ? "selected" : "")>Đang hoạt động</option>
+                                <option value="hethan" @(ViewBag.TrangThaiSelected == "hethan" ? "selected" : "")>Hết hạn</option>
+                                <option value="voHieuHoa" @(ViewBag.TrangThaiSelected == "voHieuHoa" ? "selected" : "")>Vô hiệu hóa</option>
+                            </select>
+                        </div>
+                    </form>
+                </div>
+                <div class="col-md-2 d-flex align-items-end">
+                    <a href="@Url.Action("ThemVoucher", "Admin")" class="btn btn-success w-100">
+                        <i class="fas fa-plus me-2"></i>Thêm Voucher
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bảng voucher -->
+    <div class="card shadow-sm">
+        <div class="card-header bg-white">
+            <h5 class="mb-0"><i class="fas fa-list me-2"></i>Danh Sách Voucher</h5>
+        </div>
+        <div class="card-body">
+            @if (Model != null && Model.Any())
+            {
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Mã Voucher</th>
+                                <th>Giá Trị Giảm</th>
+                                <th>Kiểu Giảm</th>
+                                <th>Điều Kiện</th>
+                                <th>Ngày Bắt Đầu</th>
+                                <th>Ngày Kết Thúc</th>
+                                <th>Số Lượng</th>
+                                <th>Trạng Thái</th>
+                                <th>Thao Tác</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var voucher in Model)
+                            {
+                                var isExpired = voucher.NgayKetThuc < DateTime.Now;
+                                var isActive = voucher.TrangThai == true && !isExpired;
+
+                                <tr>
+                                    <td>
+                                        <strong class="text-primary">@voucher.CodeVoucher</strong>
+                                    </td>
+                                    <td>
+                                        @if (voucher.KieuGiam == "Phần trăm")
+                                        {
+                                            <span class="text-danger fw-bold">@voucher.GiaTriGiam%</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="text-danger fw-bold">@String.Format("{0:N0} VNĐ", voucher.GiaTriGiam)</span>
+                                        }
+                                    </td>
+                                    <td>@voucher.KieuGiam</td>
+                                    <td>@String.Format("{0:N0} VNĐ", voucher.DieuKienToiThieu)</td>
+                                    <td>@voucher.NgayBatDau.</td>
+                                    <td>@voucher.NgayKetThuc</td>
+                                    <td>
+                                        <span class="badge @(voucher.SoLuong > 0 ? "bg-success" : "bg-danger")">
+                                            @voucher.SoLuong
+                                        </span>
+                                    </td>
+                                    <td>
+                                        @if (isActive)
+                                        {
+                                            <span class="badge bg-success">
+                                                <i class="fas fa-check-circle"></i> Hoạt động
+                                            </span>
+                                        }
+                                        else if (isExpired)
+                                        {
+                                            <span class="badge bg-secondary">
+                                                <i class="fas fa-clock"></i> Hết hạn
+                                            </span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-danger">
+                                                <i class="fas fa-times-circle"></i> Vô hiệu
+                                            </span>
+                                        }
+                                    </td>
+                                    <td>
+                                        <a href="@Url.Action("SuaVoucher", "Admin", new { id = voucher.MaVoucher })"
+                                           class="btn btn-sm btn-warning">
+                                            <i class="fas fa-edit"></i>
+                                        </a>
+                                        <button class="btn btn-sm btn-danger"
+                                                onclick="xoaVoucher(@voucher.MaVoucher, '@voucher.CodeVoucher')">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+            else
+            {
+                <div class="alert alert-info">
+                    <i class="fas fa-info-circle me-2"></i>Chưa có voucher nào!
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+<script>
+function xoaVoucher(id, code) {
+    if (confirm('Bạn có chắc chắn muốn xóa voucher "' + code + '" không?')) {
+        $.post('@Url.Action("XoaVoucher", "Admin")', { id: id }, function(result) {
+            if (result.success) {
+                alert('Xóa voucher thành công!');
+                location.reload();
+            } else {
+                alert(result.message);
+            }
+        });
+    }
+}
+</script>

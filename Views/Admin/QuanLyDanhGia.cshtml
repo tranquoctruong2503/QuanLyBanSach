@@ -1,0 +1,157 @@
+﻿@model IEnumerable<Nhom06_QuanLyBanSah.Models.DANHGIA>
+@{
+    ViewBag.Title = "Quản Lý Đánh Giá";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<div class="container-fluid">
+    <h2 class="mb-4 text-primary fw-bold">
+        <i class="fas fa-star me-2"></i>Quản Lý Đánh Giá Từ Khách Hàng
+    </h2>
+
+    <!-- Bộ lọc -->
+    <div class="card shadow-sm mb-4">
+        <div class="card-header bg-white">
+            <h5 class="mb-0"><i class="fas fa-filter me-2"></i>Bộ Lọc</h5>
+        </div>
+        <div class="card-body">
+            <form method="get" action="@Url.Action("QuanLyDanhGia", "Admin")">
+                <div class="row g-3">
+                    <div class="col-md-3">
+                        <label class="form-label">Từ ngày</label>
+                        <input type="date" name="tuNgay" class="form-control" value="@ViewBag.TuNgay">
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label">Đến ngày</label>
+                        <input type="date" name="denNgay" class="form-control" value="@ViewBag.DenNgay">
+                    </div>
+                    <div class="col-md-2">
+                        <label class="form-label">Số sao</label>
+                        <select name="soSao" class="form-select">
+                            <option value="">Tất cả</option>
+                            @for (int i = 5; i >= 1; i--)
+                            {
+                                <option value="@i" @(ViewBag.SoSaoSelected == i ? "selected" : "")>
+                                    @i <i class="fas fa-star text-warning"></i>
+                                </option>
+                            }
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label">Sách</label>
+                        <select name="maSach" class="form-select">
+                            <option value="">Tất cả</option>
+                            @foreach (var sach in ViewBag.DanhSachSach)
+                            {
+                                <option value="@sach.MaSach" @(ViewBag.MaSachSelected == sach.MaSach ? "selected" : "")>
+                                    @sach.TenSach
+                                </option>
+                            }
+                        </select>
+                    </div>
+                    <div class="col-md-1 d-flex align-items-end">
+                        <button type="submit" class="btn btn-primary w-100">
+                            <i class="fas fa-search"></i>
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Danh sách đánh giá -->
+    <div class="card shadow-sm">
+        <div class="card-header bg-white">
+            <h5 class="mb-0"><i class="fas fa-comments me-2"></i>Danh Sách Đánh Giá</h5>
+        </div>
+        <div class="card-body">
+            @if (Model != null && Model.Any())
+            {
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead class="table-light">
+                            <tr>
+                                <th style="width: 5%">ID</th>
+                                <th style="width: 20%">Sách</th>
+                                <th style="width: 15%">Khách Hàng</th>
+                                <th style="width: 10%">Số Sao</th>
+                                <th style="width: 35%">Nội Dung</th>
+                                <th style="width: 10%">Ngày Đánh Giá</th>
+                                <th style="width: 5%">Thao Tác</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var danhGia in Model)
+                            {
+                                <tr>
+                                    <td>@danhGia.MaDanhGia</td>
+                                    <td>
+                                        <strong>@danhGia.SACH.TenSach</strong>
+                                    </td>
+                                    <td>
+                                        @danhGia.TAIKHOAN.HoTen
+                                        <br>
+                                        <small class="text-muted">@danhGia.TAIKHOAN.Email</small>
+                                    </td>
+                                    <td>
+                                        <div class="d-flex align-items-center">
+                                            @for (int i = 1; i <= 5; i++)
+                                            {
+                                                if (i <= danhGia.SoSao)
+                                                {
+                                                    <i class="fas fa-star text-warning"></i>
+                                                }
+                                                else
+                                                {
+                                                    <i class="far fa-star text-warning"></i>
+                                                }
+                                            }
+                                        </div>
+                                    </td>
+                                    <td>
+                                        @if (!string.IsNullOrEmpty(danhGia.NoiDung))
+                                        {
+                                            <p class="mb-0">@danhGia.NoiDung</p>
+                                        }
+                                        else
+                                        {
+                                            <em class="text-muted">Không có nhận xét</em>
+                                        }
+                                    </td>
+                                    <td>@danhGia.NgayDanhGia</td>
+                                    <td>
+                                        <button class="btn btn-sm btn-danger"
+                                                onclick="xoaDanhGia(@danhGia.MaDanhGia)">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+            else
+            {
+                <div class="alert alert-info">
+                    <i class="fas fa-info-circle me-2"></i>Chưa có đánh giá nào!
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+<script>
+function xoaDanhGia(id) {
+    if (confirm('Bạn có chắc chắn muốn xóa đánh giá này không?')) {
+        $.post('@Url.Action("XoaDanhGia", "Admin")', { id: id }, function(result) {
+            if (result.success) {
+                alert('Xóa đánh giá thành công!');
+                location.reload();
+            } else {
+                alert(result.message);
+            }
+        });
+    }
+}
+</script>

@@ -1,0 +1,112 @@
+﻿
+@{
+    ViewBag.Title = "ThemSach";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+@model Nhom06_QuanLyBanSah.Models.SACH
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-lg-10 mx-auto">
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0">
+                        <i class="fas fa-plus-circle me-2"></i>Thêm Sách Mới
+                    </h4>
+                </div>
+                <div class="card-body p-4">
+                    @if (ViewBag.Error != null)
+                    {
+                        <div class="alert alert-danger">
+                            <i class="fas fa-exclamation-circle me-2"></i>@ViewBag.Error
+                        </div>
+                    }
+
+                    @using (Html.BeginForm("ThemSach", "Admin", FormMethod.Post, new { enctype = "multipart/form-data", @class = "needs-validation" }))
+                    {
+                        @Html.AntiForgeryToken()
+
+                        <div class="row">
+                            <!-- Cột trái -->
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label fw-bold">Tên Sách <span class="text-danger">*</span></label>
+                                    @Html.TextBoxFor(m => m.TenSach, new { @class = "form-control", required = "required", placeholder = "Nhập tên sách" })
+                                </div>
+
+                                <div class="mb-3">
+                                    <label class="form-label fw-bold">Thể Loại <span class="text-danger">*</span></label>
+                                    @Html.DropDownListFor(m => m.MaTheLoai,
+                                        (SelectList)ViewBag.TheLoaiList,
+                                        "-- Chọn thể loại --",
+                                        new { @class = "form-select", required = "required" })
+                                </div>
+
+                                <div class="mb-3">
+                                    <label class="form-label fw-bold">Tác Giả <span class="text-danger">*</span></label>
+                                    @Html.DropDownListFor(m => m.MaTacGia,
+                                        (SelectList)ViewBag.TacGiaList,
+                                        "-- Chọn tác giả --",
+                                        new { @class = "form-select", required = "required" })
+                                </div>
+
+                                <div class="mb-3">
+                                    <label class="form-label fw-bold">Nhà Xuất Bản <span class="text-danger">*</span></label>
+                                    @Html.DropDownListFor(m => m.MaNXB,
+                                        (SelectList)ViewBag.NhaXuatBanList,
+                                        "-- Chọn nhà xuất bản --",
+                                        new { @class = "form-select", required = "required" })
+                                </div>
+
+                                <div class="mb-3">
+                                    <label class="form-label fw-bold">Năm Xuất Bản</label>
+                                    @Html.TextBoxFor(m => m.NamXuatBan, new { @class = "form-control", type = "number", min = "1900", max = "2100", placeholder = "Ví dụ: 2024" })
+                                </div>
+                            </div>
+
+                            <!-- Cột phải -->
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label fw-bold">Giá Bán <span class="text-danger">*</span></label>
+                                    <div class="input-group">
+                                        @Html.TextBoxFor(m => m.GiaBan, new { @class = "form-control", type = "number", min = "0", step = "1000", required = "required", placeholder = "Nhập giá bán" })
+                                        <span class="input-group-text">VNĐ</span>
+                                    </div>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label class="form-label fw-bold">Số Lượng Tồn <span class="text-danger">*</span></label>
+                                    @Html.TextBoxFor(m => m.SoLuongTon, new { @class = "form-control", type = "number", min = "0", required = "required", placeholder = "Nhập số lượng" })
+                                </div>
+
+                                <div class="mb-3">
+                                    <label class="form-label fw-bold">Ảnh Bìa</label>
+                                    <input type="file" name="AnhBiaFile" class="form-control" accept="image/*" />
+                                    <small class="text-muted">Chọn file ảnh (JPG, PNG). Nếu không chọn sẽ dùng ảnh mặc định.</small>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label class="form-label fw-bold">Mô Tả</label>
+                                    @Html.TextAreaFor(m => m.MoTa, new { @class = "form-control", rows = "4", placeholder = "Nhập mô tả về sách..." })
+                                </div>
+                            </div>
+                        </div>
+
+                        <hr class="my-4" />
+
+                        <div class="d-flex gap-2">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-save me-2"></i>Thêm Sách
+                            </button>
+                            <a href="@Url.Action("QuanLySach", "Admin")" class="btn btn-outline-primary">
+                                <i class="fas fa-arrow-left me-2"></i>Quay Lại
+                            </a>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
