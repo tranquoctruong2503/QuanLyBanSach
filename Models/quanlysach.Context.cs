@@ -13,10 +13,10 @@ namespace Nhom06_QuanLyBanSah.Models
     using System.Data.Entity;
     using System.Data.Entity.Infrastructure;
     
-    public partial class QUANLYBANSACH_NHOM06Entities5 : DbContext
+    public partial class QUANLYBANSACH_NHOM06Entities : DbContext
     {
-        public QUANLYBANSACH_NHOM06Entities5()
-            : base("name=QUANLYBANSACH_NHOM06Entities5")
+        public QUANLYBANSACH_NHOM06Entities()
+            : base("name=QUANLYBANSACH_NHOM06Entities")
         {
         }
     

@@ -12,7 +12,7 @@ namespace Nhom06_QuanLyBanSah.Controllers
 {
     public class AdminController : Controller
     {
-        QUANLYBANSACH_NHOM06Entities5 db = new QUANLYBANSACH_NHOM06Entities5();
+        QUANLYBANSACH_NHOM06Entities db = new QUANLYBANSACH_NHOM06Entities();
 
         //Kiem tra quyen admin 
         private bool IsAdmin()

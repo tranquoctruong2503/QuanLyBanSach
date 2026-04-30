@@ -8,7 +8,7 @@ namespace Nhom06_QuanLyBanSah.Models
 {
     public class GioHang
     {
-        QUANLYBANSACH_NHOM06Entities5 db = new QUANLYBANSACH_NHOM06Entities5();
+        QUANLYBANSACH_NHOM06Entities db = new QUANLYBANSACH_NHOM06Entities();
 
         public int iMaSach { get; set; }
         public string sTenSach { get; set; }
