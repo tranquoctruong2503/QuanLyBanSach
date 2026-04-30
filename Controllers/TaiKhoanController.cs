@@ -5,6 +5,7 @@ using System.Text;
 using System.Web;
 using System.Web.Mvc;
 using Nhom06_QuanLyBanSah.Models;
+using System.Security.Cryptography;
 
 namespace Nhom06_QuanLyBanSah.Controllers
 {
@@ -21,6 +22,7 @@ namespace Nhom06_QuanLyBanSah.Controllers
         // POST: Đăng nhập - KHÔNG MÃ HÓA
         [HttpPost]
         [ValidateAntiForgeryToken]
+        // POST: Đăng nhập - ĐÃ CẬP NHẬT MÃ HÓA
         public ActionResult DangNhap(string Email, string MatKhau, string returnUrl)
         {
             try
@@ -39,7 +41,7 @@ namespace Nhom06_QuanLyBanSah.Controllers
                 // Debug - Ghi log
                 System.Diagnostics.Debug.WriteLine("=== LOGIN ATTEMPT ===");
                 System.Diagnostics.Debug.WriteLine($"Email: {Email}");
-                System.Diagnostics.Debug.WriteLine($"Password: {MatKhau}");
+                System.Diagnostics.Debug.WriteLine($"Password (plain text): {MatKhau}");
 
                 // Tìm user theo email
                 var user = db.TAIKHOAN.FirstOrDefault(x => x.Email == Email);
@@ -52,10 +54,16 @@ namespace Nhom06_QuanLyBanSah.Controllers
                 }
 
                 System.Diagnostics.Debug.WriteLine($"User found: {user.HoTen}, Role: {user.Role}");
-                System.Diagnostics.Debug.WriteLine($"DB Password: {user.MatKhau}");
 
-                // So sánh mật khẩu TRỰC TIẾP (không mã hóa)
-                if (user.MatKhau != MatKhau)
+                // --- BƯỚC QUAN TRỌNG: MÃ HÓA MẬT KHẨU NHẬP VÀO ĐỂ SO SÁNH ---
+                // Gọi lại hàm HashPassword (đã tạo ở bước Đăng ký) để băm mật khẩu vừa nhập
+                string hashedInputPassword = HashPassword(MatKhau);
+
+                System.Diagnostics.Debug.WriteLine($"Input Hash: {hashedInputPassword}");
+                System.Diagnostics.Debug.WriteLine($"DB Hash: {user.MatKhau}");
+
+                // So sánh 2 chuỗi đã mã hóa
+                if (user.MatKhau != hashedInputPassword)
                 {
                     System.Diagnostics.Debug.WriteLine("Password MISMATCH");
                     ViewBag.Error = "Mật khẩu không đúng!";
@@ -90,7 +98,6 @@ namespace Nhom06_QuanLyBanSah.Controllers
                 return View();
             }
         }
-
         // GET: Test Password - Để debug
         public ActionResult TestPassword()
         {
@@ -166,6 +173,25 @@ function copyLogin(email, pass) {
         }
 
         // GET: Đăng ký
+        // Bạn nhớ thêm 2 thư viện này lên đầu file Controller nhé:
+        
+
+        // --- Hàm băm (mã hóa) mật khẩu ra chuỗi SHA-256 ---
+        private string HashPassword(string password)
+        {
+            using (var sha256 = System.Security.Cryptography.SHA256.Create())
+            {
+                byte[] bytes = sha256.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
+                var builder = new System.Text.StringBuilder();
+                for (int i = 0; i < bytes.Length; i++)
+                {
+                    builder.Append(bytes[i].ToString("x2"));
+                }
+                return builder.ToString(); // Sẽ trả về 1 chuỗi ngẫu nhiên dài 64 ký tự
+            }
+        }
+
+        [HttpGet]
         public ActionResult DangKy()
         {
             return View();
@@ -173,15 +199,10 @@ function copyLogin(email, pass) {
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult DangKy(TAIKHOAN model)
+        public ActionResult DangKy(TAIKHOAN model, string XacNhanMatKhau) // <-- Thêm tham số XacNhanMatKhau
         {
             try
             {
-                // Debug log
-                System.Diagnostics.Debug.WriteLine("=== REGISTRATION ATTEMPT ===");
-                System.Diagnostics.Debug.WriteLine($"Email: {model.Email}");
-                System.Diagnostics.Debug.WriteLine($"HoTen: {model.HoTen}");
-
                 // Validate cơ bản
                 if (string.IsNullOrWhiteSpace(model.HoTen))
                 {
@@ -204,6 +225,19 @@ function copyLogin(email, pass) {
                 if (model.MatKhau.Length < 6)
                 {
                     ViewBag.Error = "Mật khẩu phải có ít nhất 6 ký tự!";
+                    return View(model);
+                }
+
+                // --- Validate Xác nhận mật khẩu ---
+                if (string.IsNullOrWhiteSpace(XacNhanMatKhau))
+                {
+                    ViewBag.Error = "Vui lòng xác nhận lại mật khẩu!";
+                    return View(model);
+                }
+
+                if (model.MatKhau != XacNhanMatKhau)
+                {
+                    ViewBag.Error = "Mật khẩu và xác nhận mật khẩu không khớp nhau!";
                     return View(model);
                 }
 
@@ -234,23 +268,18 @@ function copyLogin(email, pass) {
                 model.NgayTao = DateTime.Now;
                 model.NgayCapNhat = DateTime.Now;
 
-                // LƯU MẬT KHẨU TRỰC TIẾP (không mã hóa)
-                System.Diagnostics.Debug.WriteLine($"Password (plain text): {model.MatKhau}");
+                // --- MÃ HÓA MẬT KHẨU TRƯỚC KHI LƯU ---
+                model.MatKhau = HashPassword(model.MatKhau);
 
                 // Lưu vào database
                 db.TAIKHOAN.Add(model);
                 db.SaveChanges();
-
-                System.Diagnostics.Debug.WriteLine("Registration SUCCESS");
 
                 TempData["Success"] = "Đăng ký thành công! Vui lòng đăng nhập với email và mật khẩu vừa tạo.";
                 return RedirectToAction("DangNhap");
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine($"REGISTRATION ERROR: {ex.Message}");
-                System.Diagnostics.Debug.WriteLine($"Stack Trace: {ex.StackTrace}");
-
                 ViewBag.Error = $"Đã xảy ra lỗi khi đăng ký: {ex.Message}";
                 return View(model);
             }
