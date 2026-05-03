@@ -4,21 +4,22 @@
     Layout = "~/Views/Shared/_LayoutPage1.cshtml";
 }
 
-<div class="container my-5">
+<div class="container py-5">
     <div class="row justify-content-center">
         <div class="col-lg-8 col-md-10">
-            <div class="card shadow-lg border-0">
-                <div class="card-header bg-primary text-white">
-                    <h3 class="text-center mb-0 py-2">
-                        <i class="fas fa-user-plus me-2"></i>ĐĂNG KÝ TÀI KHOẢN
-                    </h3>
+            <div class="card custom-card-shadow border-0 rounded-4">
+                <div class="card-header bg-white border-bottom-0 pt-4 pb-0 text-center">
+                    <h2 class="fw-bold text-primary text-uppercase mb-0">
+                        ĐĂNG KÝ
+                    </h2>
                 </div>
-                <div class="card-body p-4">
+
+                <div class="card-body p-4 p-md-5">
                     @if (ViewBag.Error != null)
                     {
-                    <div class="alert alert-danger">
-                        <i class="fas fa-exclamation-circle me-2"></i>
-                        <strong>Lỗi!</strong> @ViewBag.Error
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        <i class="fas fa-exclamation-triangle me-2"></i><strong>Lỗi!</strong> @ViewBag.Error
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                     </div>
                     }
 
@@ -26,89 +27,98 @@
                     {
                     @Html.AntiForgeryToken()
 
-                    <div class="row">
-                        <div class="col-md-6 mb-3">
-                            <label class="form-label fw-bold">
-                                <i class="fas fa-user me-1"></i>Họ và tên <span class="text-danger">*</span>
-                            </label>
-                            @Html.TextBoxFor(m => m.HoTen, new { @class = "form-control", placeholder = "Nhập họ và tên...", required = "required" })
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold">Họ và tên <span class="text-danger">*</span></label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-light border-end-0"><i class="fas fa-user text-muted"></i></span>
+                                @Html.TextBoxFor(m => m.HoTen, new { @class = "form-control border-start-0", placeholder = "Nhập họ và tên...", required = "required" })
+                            </div>
                         </div>
 
-                        <div class="col-md-6 mb-3">
-                            <label class="form-label fw-bold">
-                                <i class="fas fa-envelope me-1"></i>Email <span class="text-danger">*</span>
-                            </label>
-                            @Html.TextBoxFor(m => m.Email, new { @class = "form-control", type = "email", placeholder = "Nhập email...", required = "required" })
-                        </div>
-                    </div>
-
- <!-- Hàng Mật khẩu & Xác nhận mật khẩu -->
-                    <div class="row">
-                        <div class="col-md-6 mb-3">
-                            <label class="form-label fw-bold">
-                                <i class="fas fa-lock me-1"></i>Mật khẩu <span class="text-danger">*</span>
-                            </label>
-                            @Html.PasswordFor(m => m.MatKhau, new { @class = "form-control", placeholder = "Nhập mật khẩu (tối thiểu 6 ký tự)...", required = "required" })
-                        </div>
-
-                        <div class="col-md-6 mb-3">
-                            <label class="form-label fw-bold">
-                                <i class="fas fa-check-circle me-1"></i>Xác nhận mật khẩu <span class="text-danger">*</span>
-                            </label>
-                            <!-- Dùng thẻ input HTML thường để không ảnh hưởng đến Model gốc -->
-                            <input type="password" name="XacNhanMatKhau" class="form-control" placeholder="Nhập lại mật khẩu..." required="required" />
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold">Email <span class="text-danger">*</span></label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-light border-end-0"><i class="fas fa-envelope text-muted"></i></span>
+                                @Html.TextBoxFor(m => m.Email, new { @class = "form-control border-start-0", type = "email", placeholder = "Nhập email...", required = "required" })
+                            </div>
                         </div>
                     </div>
 
-                    <div class="row">
-                        <div class="col-md-6 mb-3">
-                            <label class="form-label fw-bold">
-                                <i class="fas fa-phone me-1"></i>Số điện thoại <span class="text-danger">*</span>
-                            </label>
-                            @Html.TextBoxFor(m => m.DienThoai, new { @class = "form-control", placeholder = "VD: 0912345678", required = "required" })
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold">Mật khẩu <span class="text-danger">*</span></label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-light border-end-0"><i class="fas fa-lock text-muted"></i></span>
+                                @Html.PasswordFor(m => m.MatKhau, new { @class = "form-control border-start-0 border-end-0", id = "matKhau", placeholder = "Tối thiểu 6 ký tự...", required = "required" })
+                                <button class="btn btn-outline-secondary toggle-password " type="button" data-target="#matKhau">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                            </div>
                         </div>
 
-                        <div class="col-md-6 mb-3">
-                            <label class="form-label fw-bold">
-                                <i class="fas fa-calendar me-1"></i>Ngày sinh <span class="text-danger">*</span>
-                            </label>
-                            @Html.TextBoxFor(m => m.NgaySinh, "{0:yyyy-MM-dd}", new { @class = "form-control", type = "date", required = "required" })
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold">Xác nhận mật khẩu <span class="text-danger">*</span></label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-light border-end-0"><i class="fas fa-check-circle text-muted"></i></span>
+                                <input type="password" id="xacNhanMatKhau" name="XacNhanMatKhau" class="form-control border-start-0 border-end-0" placeholder="Nhập lại mật khẩu..." required="required" />
+                                <button class="btn btn-outline-secondary toggle-password" type="button" data-target="#xacNhanMatKhau">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                            </div>
                         </div>
                     </div>
 
-                    <div class="row">
-                        <div class="col-md-6 mb-3">
-                            <label class="form-label fw-bold">
-                                <i class="fas fa-venus-mars me-1"></i>Giới tính <span class="text-danger">*</span>
-                            </label>
-                            <select name="GioiTinh" class="form-control" required>
-                                <option value="">-- Chọn giới tính --</option>
-                                <option value="Nam">Nam</option>
-                                <option value="Nữ">Nữ</option>
-                            </select>
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold">Số điện thoại <span class="text-danger">*</span></label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-light border-end-0"><i class="fas fa-phone text-muted"></i></span>
+                                @Html.TextBoxFor(m => m.DienThoai, new { @class = "form-control border-start-0", placeholder = "VD: 0912345678", required = "required" })
+                            </div>
                         </div>
 
-                        <!-- Bỏ trống 1 cột để Layout giữ nguyên lưới 6-6 đẹp mắt -->
-                        <div class="col-md-6 mb-3"></div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold">Ngày sinh <span class="text-danger">*</span></label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-light border-end-0"><i class="fas fa-calendar-alt text-muted"></i></span>
+                                @Html.TextBoxFor(m => m.NgaySinh, "{0:yyyy-MM-dd}", new { @class = "form-control border-start-0", type = "date", required = "required" })
+                            </div>
+                        </div>
                     </div>
 
-                    <div class="mb-3">
-                        <label class="form-label fw-bold">
-                            <i class="fas fa-map-marker-alt me-1"></i>Địa chỉ <span class="text-danger">*</span>
-                        </label>
-                        @Html.TextAreaFor(m => m.DiaChi, new { @class = "form-control", rows = 3, placeholder = "Nhập địa chỉ đầy đủ...", required = "required" })
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold">Giới tính <span class="text-danger">*</span></label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-light border-end-0"><i class="fas fa-venus-mars text-muted"></i></span>
+                                <select name="GioiTinh" class="form-select border-start-0" required>
+                                    <option value="">-- Chọn giới tính --</option>
+                                    <option value="Nam">Nam</option>
+                                    <option value="Nữ">Nữ</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold">Địa chỉ <span class="text-danger">*</span></label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-light border-end-0"><i class="fas fa-map-marker-alt text-muted"></i></span>
+                                @Html.TextBoxFor(m => m.DiaChi, new { @class = "form-control border-start-0", placeholder = "Nhập địa chỉ đầy đủ...", required = "required" })
+                            </div>
+                        </div>
                     </div>
 
-                    <div class="d-grid mb-3">
-                        <button type="submit" class="btn btn-primary btn-lg">
-                            <i class="fas fa-user-plus me-2"></i>Đăng Ký
+                    <div class="d-grid gap-2 mt-4">
+                        <button type="submit" class="btn btn-primary btn-lg fw-bold rounded-3 shadow-sm custom-btn-hover">
+                            ĐĂNG KÝ NGAY
                         </button>
                     </div>
 
-                    <div class="text-center">
-                        <p class="mb-0">
+                    <div class="text-center mt-4">
+                        <p class="text-muted mb-0">
                             Đã có tài khoản?
-                            <a href="@Url.Action("DangNhap", "TaiKhoan")" class="fw-bold">Đăng nhập ngay</a>
+                            <a href="@Url.Action("DangNhap", "TaiKhoan")" class="text-primary fw-bold text-decoration-none">Đăng nhập tại đây</a>
                         </p>
                     </div>
                     }
@@ -119,16 +129,59 @@
 </div>
 
 <style>
-    .card {
-        border-radius: 15px;
+    /* CSS đổ bóng cực mượt cho Card */
+    .custom-card-shadow {
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08); /* Đổ bóng tĩnh mềm mại */
+        transition: transform 0.3s ease, box-shadow 0.3s ease; /* Hiệu ứng chuyển động mượt */
     }
 
-    .card-header {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        /* Hiệu ứng nổi lên khi rê chuột vào Form */
+        .custom-card-shadow:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+        }
+
+    /* Tinh chỉnh input group để icon liền mạch với ô nhập liệu */
+    .input-group-text {
+        border-color: #ced4da;
     }
 
-    .btn-lg {
-        padding: 12px;
-        font-weight: 600;
+    .form-control:focus, .form-select:focus {
+        border-color: #86b7fe;
+        box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
     }
+
+    /* Hiệu ứng nút bấm */
+    .custom-btn-hover {
+        transition: all 0.3s ease;
+    }
+
+        .custom-btn-hover:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(13, 110, 253, 0.4) !important;
+        }
 </style>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const togglePasswordBtns = document.querySelectorAll('.toggle-password');
+
+        togglePasswordBtns.forEach(button => {
+            button.addEventListener('click', function () {
+                const targetId = this.getAttribute('data-target');
+                const input = document.querySelector(targetId);
+                const icon = this.querySelector('i');
+
+                if (input.type === 'password') {
+                    input.type = 'text';
+                    icon.classList.remove('fa-eye');
+                    icon.classList.add('fa-eye-slash');
+                } else {
+                    input.type = 'password';
+                    icon.classList.remove('fa-eye-slash');
+                    icon.classList.add('fa-eye');
+                }
+            });
+        });
+    });
+</script>

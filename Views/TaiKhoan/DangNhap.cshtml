@@ -2,60 +2,79 @@
     ViewBag.Title = "Đăng nhập";
     Layout = "~/Views/Shared/_LayoutPage1.cshtml";
 }
-@if (TempData["Error"] != null)
-{
-    <div class="alert alert-danger">
-        @TempData["Error"]
-    </div>
-}
-<div class="container my-5">
+
+<div class="container py-5">
     <div class="row justify-content-center">
         <div class="col-lg-5 col-md-7">
-            <div class="card shadow-lg border-0">
-                <div class="card-body p-5">
-                    <h2 class="text-center text-primary mb-4">
-                        <i class="fas fa-sign-in-alt me-2"></i>Đăng Nhập
+            <div class="card custom-card-shadow border-0 rounded-4">
+                <div class="card-header bg-white border-bottom-0 pt-4 pb-0 text-center">
+                    <h2 class="fw-bold text-primary text-uppercase mb-0">
+                        ĐĂNG NHẬP
                     </h2>
+                </div>
+
+                <div class="card-body p-4 p-md-5">
+                    @if (TempData["Error"] != null)
+                    {
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        <i class="fas fa-exclamation-triangle me-2"></i>@TempData["Error"]
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                    }
 
                     @if (TempData["Success"] != null)
                     {
-                        <div class="alert alert-success">
-                            <i class="fas fa-check-circle me-2"></i>@TempData["Success"]
-                        </div>
+                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                        <i class="fas fa-check-circle me-2"></i>@TempData["Success"]
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
                     }
 
                     @if (ViewBag.Error != null)
                     {
-                        <div class="alert alert-danger">
-                            <i class="fas fa-exclamation-circle me-2"></i>@ViewBag.Error
-                        </div>
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        <i class="fas fa-exclamation-circle me-2"></i>@ViewBag.Error
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
                     }
 
                     @using (Html.BeginForm("DangNhap", "TaiKhoan", FormMethod.Post))
                     {
-                        @Html.AntiForgeryToken()
+                    @Html.AntiForgeryToken()
 
-                        <div class="mb-3">
-                            <label class="form-label"><i class="fas fa-envelope me-1"></i>Email</label>
-                            <input type="email" name="Email" class="form-control" placeholder="Nhập email" required />
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Email <span class="text-danger">*</span></label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-light border-end-0"><i class="fas fa-envelope text-muted"></i></span>
+                            <input type="email" name="Email" class="form-control border-start-0" placeholder="Nhập email..." required />
                         </div>
+                    </div>
 
-                        <div class="mb-4">
-                            <label class="form-label"><i class="fas fa-lock me-1"></i>Mật khẩu</label>
-                            <input type="password" name="MatKhau" class="form-control" placeholder="Nhập mật khẩu" required />
-
+                    <div class="mb-4">
+                        <label class="form-label fw-semibold">Mật khẩu <span class="text-danger">*</span></label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-light border-end-0"><i class="fas fa-lock text-muted"></i></span>
+                            <input type="password" id="matKhauLogin" name="MatKhau" class="form-control border-start-0 border-end-0" placeholder="Nhập mật khẩu..." required />
+                            <button class="btn btn-outline-secondary toggle-password" type="button" data-target="#matKhauLogin">
+                                <i class="fas fa-eye"></i>
+                            </button>
                         </div>
+                        <div class="text-end mb-3"><a href="@Url.Action("QuenMatKhau", "TaiKhoan")">Quên mật khẩu</a></div>
+                    </div>
+                    
 
-                        <button type="submit" class="btn btn-primary w-100 py-2 mb-3">
-                            <i class="fas fa-sign-in-alt me-2"></i>Đăng Nhập
+                    <div class="d-grid gap-2 mb-4">
+                        <button type="submit" class="btn btn-primary btn-lg fw-bold rounded-3 shadow-sm custom-btn-hover">
+                            ĐĂNG NHẬP
                         </button>
+                    </div>
 
-                        <div class="text-center">
-                            <p class="mb-0">
-                                Chưa có tài khoản?
-                                <a href="@Url.Action("DangKy", "TaiKhoan")" class="text-primary fw-bold">Đăng ký ngay</a>
-                            </p>
-                        </div>
+                    <div class="text-center">
+                        <p class="text-muted mb-0">
+                            Chưa có tài khoản?
+                            <a href="@Url.Action("DangKy", "TaiKhoan")" class="text-primary fw-bold text-decoration-none">Đăng ký ngay</a>
+                        </p>
+                    </div>
                     }
                 </div>
             </div>
@@ -63,4 +82,57 @@
     </div>
 </div>
 
+<style>
+    /* Tái sử dụng CSS từ trang Đăng Ký để đảm bảo tính đồng nhất (Consistency) */
+    .custom-card-shadow {
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
 
+        .custom-card-shadow:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+        }
+
+    .input-group-text {
+        border-color: #ced4da;
+    }
+
+    .form-control:focus {
+        border-color: #86b7fe;
+        box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+    }
+
+    .custom-btn-hover {
+        transition: all 0.3s ease;
+    }
+
+        .custom-btn-hover:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(13, 110, 253, 0.4) !important;
+        }
+</style>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const togglePasswordBtns = document.querySelectorAll('.toggle-password');
+
+        togglePasswordBtns.forEach(button => {
+            button.addEventListener('click', function () {
+                const targetId = this.getAttribute('data-target');
+                const input = document.querySelector(targetId);
+                const icon = this.querySelector('i');
+
+                if (input.type === 'password') {
+                    input.type = 'text';
+                    icon.classList.remove('fa-eye');
+                    icon.classList.add('fa-eye-slash');
+                } else {
+                    input.type = 'password';
+                    icon.classList.remove('fa-eye-slash');
+                    icon.classList.add('fa-eye');
+                }
+            });
+        });
+    });
+</script>

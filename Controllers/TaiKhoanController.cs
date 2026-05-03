@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
+using System.Net.Mail;
+using System.Security.Cryptography;
 using System.Text;
 using System.Web;
 using System.Web.Mvc;
 using Nhom06_QuanLyBanSah.Models;
-using System.Security.Cryptography;
 
 namespace Nhom06_QuanLyBanSah.Controllers
 {
@@ -13,184 +15,7 @@ namespace Nhom06_QuanLyBanSah.Controllers
     {
         QUANLYBANSACH_NHOM06Entities db = new QUANLYBANSACH_NHOM06Entities();
 
-        // GET: Đăng nhập
-        public ActionResult DangNhap()
-        {
-            return View();
-        }
-
-        // POST: Đăng nhập - KHÔNG MÃ HÓA
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        // POST: Đăng nhập - ĐÃ CẬP NHẬT MÃ HÓA
-        public ActionResult DangNhap(string Email, string MatKhau, string returnUrl)
-        {
-            try
-            {
-                // Kiểm tra input
-                if (string.IsNullOrEmpty(Email) || string.IsNullOrEmpty(MatKhau))
-                {
-                    ViewBag.Error = "Vui lòng nhập đầy đủ thông tin!";
-                    return View();
-                }
-
-                // Loại bỏ khoảng trắng thừa
-                Email = Email.Trim();
-                MatKhau = MatKhau.Trim();
-
-                // Debug - Ghi log
-                System.Diagnostics.Debug.WriteLine("=== LOGIN ATTEMPT ===");
-                System.Diagnostics.Debug.WriteLine($"Email: {Email}");
-                System.Diagnostics.Debug.WriteLine($"Password (plain text): {MatKhau}");
-
-                // Tìm user theo email
-                var user = db.TAIKHOAN.FirstOrDefault(x => x.Email == Email);
-
-                if (user == null)
-                {
-                    System.Diagnostics.Debug.WriteLine("User NOT FOUND in database");
-                    ViewBag.Error = "Email không tồn tại trong hệ thống!";
-                    return View();
-                }
-
-                System.Diagnostics.Debug.WriteLine($"User found: {user.HoTen}, Role: {user.Role}");
-
-                // --- BƯỚC QUAN TRỌNG: MÃ HÓA MẬT KHẨU NHẬP VÀO ĐỂ SO SÁNH ---
-                // Gọi lại hàm HashPassword (đã tạo ở bước Đăng ký) để băm mật khẩu vừa nhập
-                string hashedInputPassword = HashPassword(MatKhau);
-
-                System.Diagnostics.Debug.WriteLine($"Input Hash: {hashedInputPassword}");
-                System.Diagnostics.Debug.WriteLine($"DB Hash: {user.MatKhau}");
-
-                // So sánh 2 chuỗi đã mã hóa
-                if (user.MatKhau != hashedInputPassword)
-                {
-                    System.Diagnostics.Debug.WriteLine("Password MISMATCH");
-                    ViewBag.Error = "Mật khẩu không đúng!";
-                    return View();
-                }
-
-                System.Diagnostics.Debug.WriteLine("Login SUCCESS");
-
-                // Đăng nhập thành công - Lưu session
-                Session["TaiKhoan"] = user;
-                Session["HoTen"] = user.HoTen;
-                Session["Role"] = user.Role;
-                Session["UserID"] = user.userID;
-
-                System.Diagnostics.Debug.WriteLine($"Session created - Role: {user.Role}");
-
-                // Chuyển hướng theo role
-                if (user.Role == "admin")
-                {
-                    System.Diagnostics.Debug.WriteLine("Redirecting to Admin panel");
-                    return RedirectToAction("Index", "admin");
-                }
-
-                System.Diagnostics.Debug.WriteLine("Redirecting to Home page");
-                return RedirectToAction("Trangchu", "Home");
-            }
-            catch (Exception ex)
-            {
-                System.Diagnostics.Debug.WriteLine($"LOGIN ERROR: {ex.Message}");
-                System.Diagnostics.Debug.WriteLine($"Stack Trace: {ex.StackTrace}");
-                ViewBag.Error = $"Đã xảy ra lỗi: {ex.Message}";
-                return View();
-            }
-        }
-        // GET: Test Password - Để debug
-        public ActionResult TestPassword()
-        {
-            try
-            {
-                var allUsers = db.TAIKHOAN.ToList();
-
-                StringBuilder result = new StringBuilder();
-                result.Append("<html><head><style>");
-                result.Append("body { font-family: Arial; padding: 20px; }");
-                result.Append("table { border-collapse: collapse; width: 100%; margin: 20px 0; }");
-                result.Append("th, td { border: 1px solid #ddd; padding: 12px; text-align: left; }");
-                result.Append("th { background-color: #4CAF50; color: white; }");
-                result.Append("tr:nth-child(even) { background-color: #f2f2f2; }");
-                result.Append(".info { background-color: #d9edf7; padding: 15px; border-radius: 5px; margin: 10px 0; }");
-                result.Append("</style></head><body>");
-
-                result.Append("<h2>🔑 Danh Sách Tài Khoản (Password không mã hóa)</h2>");
-
-                result.Append("<div class='info'>");
-                result.Append("<p><strong>Lưu ý:</strong> Password được lưu dạng PLAIN TEXT (không mã hóa)</p>");
-                result.Append("</div>");
-
-                result.Append("<h3>📋 Tất cả tài khoản:</h3>");
-                result.Append("<table>");
-                result.Append("<tr><th>ID</th><th>Họ Tên</th><th>Email</th><th>Password</th><th>Role</th><th>Action</th></tr>");
-
-                foreach (var u in allUsers)
-                {
-                    result.Append("<tr>");
-                    result.Append($"<td>{u.userID}</td>");
-                    result.Append($"<td>{u.HoTen}</td>");
-                    result.Append($"<td>{u.Email}</td>");
-                    result.Append($"<td><strong>{u.MatKhau}</strong></td>");
-                    result.Append($"<td><span style='color: {(u.Role == "admin" ? "red" : "blue")}'>{u.Role}</span></td>");
-                    result.Append($"<td><button onclick='copyLogin(\"{u.Email}\", \"{u.MatKhau}\")'>Copy Login</button></td>");
-                    result.Append("</tr>");
-                }
-
-                result.Append("</table>");
-
-                result.Append("<div class='info'>");
-                result.Append("<h4>📝 Tạo tài khoản mới:</h4>");
-                result.Append("<pre style='background: #f4f4f4; padding: 15px; border-radius: 5px;'>");
-                result.Append(@"
-INSERT INTO TAIKHOAN 
-(HoTen, NgaySinh, GioiTinh, DienThoai, MatKhau, Email, DiaChi, Role, NgayTao, NgayCapNhat) 
-VALUES
-(N'Test User', '1990-01-01', N'Nam', '0999999999', '123456', 'test@test.com', N'TP.HCM', 'user', GETDATE(), GETDATE());
-");
-                result.Append("</pre>");
-                result.Append("</div>");
-
-                result.Append("<script>");
-                result.Append(@"
-function copyLogin(email, pass) {
-    const text = 'Email: ' + email + '\nPassword: ' + pass;
-    navigator.clipboard.writeText(text).then(() => {
-        alert('Đã copy thông tin đăng nhập!');
-    });
-}
-");
-                result.Append("</script>");
-
-                result.Append("</body></html>");
-
-                return Content(result.ToString(), "text/html");
-            }
-            catch (Exception ex)
-            {
-                return Content($"<h2>Error:</h2><pre>{ex.Message}\n\n{ex.StackTrace}</pre>", "text/html");
-            }
-        }
-
-        // GET: Đăng ký
-        // Bạn nhớ thêm 2 thư viện này lên đầu file Controller nhé:
-        
-
-        // --- Hàm băm (mã hóa) mật khẩu ra chuỗi SHA-256 ---
-        private string HashPassword(string password)
-        {
-            using (var sha256 = System.Security.Cryptography.SHA256.Create())
-            {
-                byte[] bytes = sha256.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
-                var builder = new System.Text.StringBuilder();
-                for (int i = 0; i < bytes.Length; i++)
-                {
-                    builder.Append(bytes[i].ToString("x2"));
-                }
-                return builder.ToString(); // Sẽ trả về 1 chuỗi ngẫu nhiên dài 64 ký tự
-            }
-        }
-
+        //Đăng ký
         [HttpGet]
         public ActionResult DangKy()
         {
@@ -199,11 +24,10 @@ function copyLogin(email, pass) {
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult DangKy(TAIKHOAN model, string XacNhanMatKhau) // <-- Thêm tham số XacNhanMatKhau
+        public ActionResult DangKy(TAIKHOAN model, string XacNhanMatKhau)
         {
             try
             {
-                // Validate cơ bản
                 if (string.IsNullOrWhiteSpace(model.HoTen))
                 {
                     ViewBag.Error = "Vui lòng nhập họ tên!";
@@ -228,7 +52,6 @@ function copyLogin(email, pass) {
                     return View(model);
                 }
 
-                // --- Validate Xác nhận mật khẩu ---
                 if (string.IsNullOrWhiteSpace(XacNhanMatKhau))
                 {
                     ViewBag.Error = "Vui lòng xác nhận lại mật khẩu!";
@@ -268,24 +91,104 @@ function copyLogin(email, pass) {
                 model.NgayTao = DateTime.Now;
                 model.NgayCapNhat = DateTime.Now;
 
-                // --- MÃ HÓA MẬT KHẨU TRƯỚC KHI LƯU ---
-                model.MatKhau = HashPassword(model.MatKhau);
+                //Mã hóa mật khẩu bằng BCrypt
+                model.MatKhau = BCrypt.Net.BCrypt.HashPassword(model.MatKhau);
 
                 // Lưu vào database
                 db.TAIKHOAN.Add(model);
                 db.SaveChanges();
 
-                TempData["Success"] = "Đăng ký thành công! Vui lòng đăng nhập với email và mật khẩu vừa tạo.";
+                TempData["Success"] = "Đăng ký tài khoản thành công!";
                 return RedirectToAction("DangNhap");
             }
             catch (Exception ex)
             {
-                ViewBag.Error = $"Đã xảy ra lỗi khi đăng ký: {ex.Message}";
+                ViewBag.Error = $"Đã xảy ra lỗi hệ thống, vui lòng thử lại sau.";
                 return View(model);
             }
         }
 
-        // Đăng xuất
+        //Đăng nhập
+        public ActionResult DangNhap()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult DangNhap(string Email, string MatKhau, string returnUrl)
+        {
+            try
+            {
+                // Kiểm tra input
+                if (string.IsNullOrEmpty(Email) || string.IsNullOrEmpty(MatKhau))
+                {
+                    ViewBag.Error = "Vui lòng nhập đầy đủ thông tin!";
+                    return View();
+                }
+
+                // Loại bỏ khoảng trắng thừa
+                Email = Email.Trim();
+                MatKhau = MatKhau.Trim();
+
+                // Debug
+                System.Diagnostics.Debug.WriteLine("=== LOGIN ATTEMPT ===");
+                System.Diagnostics.Debug.WriteLine($"Email: {Email}");
+                System.Diagnostics.Debug.WriteLine($"Password (plain text): {MatKhau}");
+
+                // Tìm user theo email
+                var user = db.TAIKHOAN.FirstOrDefault(x => x.Email == Email);
+
+                if (user == null)
+                {
+                    System.Diagnostics.Debug.WriteLine("User NOT FOUND in database");
+                    ViewBag.Error = "Email không tồn tại trong hệ thống!";
+                    return View();
+                }
+
+                System.Diagnostics.Debug.WriteLine($"User found: {user.HoTen}, Role: {user.Role}");
+
+               
+                // So sánh chuỗi đã mã hóa
+                bool isValidPassword = BCrypt.Net.BCrypt.Verify(MatKhau, user.MatKhau);
+                if (!isValidPassword)
+                {
+                    System.Diagnostics.Debug.WriteLine("Password MISMATCH");
+                    ViewBag.Error = "Mật khẩu không đúng!";
+                    return View();
+                }
+
+                System.Diagnostics.Debug.WriteLine("Login SUCCESS");
+
+                Session["TaiKhoan"] = user;
+                Session["HoTen"] = user.HoTen;
+                Session["Role"] = user.Role;
+                Session["UserID"] = user.userID;
+
+                System.Diagnostics.Debug.WriteLine($"Session created - Role: {user.Role}");
+
+                // Chuyển hướng theo role
+                if (user.Role == "admin")
+                {
+                    System.Diagnostics.Debug.WriteLine("Redirecting to Admin panel");
+                    return RedirectToAction("Index", "admin");
+                }
+
+                System.Diagnostics.Debug.WriteLine("Redirecting to Home page");
+                return RedirectToAction("Trangchu", "Home");
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"LOGIN ERROR: {ex.Message}");
+                System.Diagnostics.Debug.WriteLine($"Stack Trace: {ex.StackTrace}");
+                ViewBag.Error = $"Đã xảy ra lỗi hệ thống, vui lòng thử lại sau.";
+                return View();
+            }
+        }
+
+      
+
+      
         public ActionResult DangXuat()
         {
             Session.Clear();
@@ -293,7 +196,7 @@ function copyLogin(email, pass) {
             return RedirectToAction("Trangchu", "Home");
         }
 
-        // Trang thông tin cá nhân (User)
+        //Thông tin cá nhân
         [HttpGet]
         public ActionResult ThongTinCaNhan()
         {
@@ -313,7 +216,6 @@ function copyLogin(email, pass) {
             return View(user);
         }
 
-        // POST: Cập nhật thông tin cá nhân
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult ThongTinCaNhan(TAIKHOAN model)
@@ -344,7 +246,7 @@ function copyLogin(email, pass) {
             return View(model);
         }
 
-        // Đổi mật khẩu
+        //Đổi mật khẩu
         [HttpGet]
         public ActionResult DoiMatKhau()
         {
@@ -364,8 +266,8 @@ function copyLogin(email, pass) {
             int userID = (int)Session["UserID"];
             var user = db.TAIKHOAN.Find(userID);
 
-            // KIỂM TRA MẬT KHẨU CŨ TRỰC TIẾP (không mã hóa)
-            if (user.MatKhau != MatKhauCu)
+            bool isValidOldPassword = BCrypt.Net.BCrypt.Verify(MatKhauCu, user.MatKhau);
+            if (!isValidOldPassword)
             {
                 ViewBag.Error = "Mật khẩu cũ không đúng!";
                 return View();
@@ -377,13 +279,123 @@ function copyLogin(email, pass) {
                 return View();
             }
 
-            // LƯU MẬT KHẨU MỚI (không mã hóa)
-            user.MatKhau = MatKhauMoi;
+            user.MatKhau = BCrypt.Net.BCrypt.HashPassword(MatKhauMoi);
             user.NgayCapNhat = DateTime.Now;
             db.SaveChanges();
 
             ViewBag.Success = "Đổi mật khẩu thành công!";
             return View();
+        }
+
+        //Sinh mật khẩu ngẫu nhiên
+        private string GenerateRandomPassword(int length = 8)
+        {
+            const string valid = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
+            StringBuilder res = new StringBuilder();
+            Random rnd = new Random();
+            while (0 < length--)
+            {
+                res.Append(valid[rnd.Next(valid.Length)]);
+            }
+            return res.ToString();
+        }
+
+        //Gửi Email (Cấu hình SMTP Gmail)
+        private bool SendEmail(string toEmail, string newPassword)
+        {
+            try
+            {
+                // 1. Cấu hình thông tin người gửi
+                var senderEmail = new MailAddress("trqtruong123@gmail.com", "Nhà Sách Quốc Trường");
+                var receiverEmail = new MailAddress(toEmail);
+
+                const string senderAppPassword = "uvqe ojjg bwgp fbnu";
+
+                const string subject = "Khôi phục mật khẩu - Nhà Sách Quốc Trường";
+                string body = $@"
+            <h3>Thông báo cấp lại mật khẩu</h3>
+            <p>Chào bạn,</p>
+            <p>Hệ thống đã đặt lại mật khẩu cho tài khoản của bạn.</p>
+            <p>Mật khẩu mới của bạn là: <strong>{newPassword}</strong></p>
+            <p>Vui lòng đăng nhập và tiến hành đổi lại mật khẩu ngay để đảm bảo an toàn.</p>
+            <br/>
+            <p>Trân trọng,</p>
+            <p>Đội ngũ hỗ trợ khách hàng.</p>";
+
+                // 2. Cấu hình server gửi mail của Google (SMTP)
+                var smtp = new SmtpClient
+                {
+                    Host = "smtp.gmail.com",
+                    Port = 587,
+                    EnableSsl = true,
+                    DeliveryMethod = SmtpDeliveryMethod.Network,
+                    UseDefaultCredentials = false,
+                    Credentials = new NetworkCredential(senderEmail.Address, senderAppPassword)
+                };
+
+                // 3. Tạo nội dung email
+                using (var message = new MailMessage(senderEmail, receiverEmail)
+                {
+                    Subject = subject,
+                    Body = body,
+                    IsBodyHtml = true 
+                })
+                {
+                    smtp.Send(message);
+                }
+                return true;
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine("Lỗi gửi mail: " + ex.Message);
+                return false;
+            }
+        }
+
+        //Quên mật khẩu
+
+        [HttpGet]
+        public ActionResult QuenMatKhau()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult QuenMatKhau(string Email)
+        {
+            if (string.IsNullOrWhiteSpace(Email))
+            {
+                ViewBag.Error = "Vui lòng nhập địa chỉ email!";
+                return View();
+            }
+
+            // 1. Kiểm tra xem Email có tồn tại trong hệ thống không
+            var user = db.TAIKHOAN.FirstOrDefault(x => x.Email == Email.Trim());
+            if (user == null)
+            {
+                TempData["Success"] = "Nếu email hợp lệ, một mật khẩu mới đã được gửi đến hộp thư của bạn.";
+                return RedirectToAction("DangNhap");
+            }
+
+            string newRandomPassword = GenerateRandomPassword(8);
+
+            user.MatKhau = BCrypt.Net.BCrypt.HashPassword(newRandomPassword);
+            user.NgayCapNhat = DateTime.Now;
+            db.SaveChanges();
+
+            bool isEmailSent = SendEmail(user.Email, newRandomPassword);
+
+            if (isEmailSent)
+            {
+                TempData["Success"] = "Mật khẩu mới đã được gửi đến email của bạn. Vui lòng kiểm tra hộp thư.";
+                return RedirectToAction("DangNhap");
+            }
+            else
+            {
+                ViewBag.Error = "Lỗi hệ thống gửi mail. Không thể khôi phục mật khẩu lúc này!";
+                return View();
+            }
         }
     }
 }

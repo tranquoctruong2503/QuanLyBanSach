@@ -1,0 +1,84 @@
+﻿@{
+    ViewBag.Title = "Quên mật khẩu";
+    Layout = "~/Views/Shared/_LayoutPage1.cshtml";
+}
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-5 col-md-7">
+            <div class="card custom-card-shadow border-0 rounded-4">
+                <div class="card-header bg-white border-bottom-0 pt-4 pb-0 text-center">
+                    <h2 class="fw-bold text-primary text-uppercase mb-0">
+                        Quên Mật Khẩu
+                    </h2>
+                </div>
+
+                <div class="card-body p-4 p-md-5">
+                    @if (ViewBag.Error != null)
+                    {
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        <i class="fas fa-exclamation-triangle me-2"></i>@ViewBag.Error
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                    }
+
+                    @using (Html.BeginForm("QuenMatKhau", "TaiKhoan", FormMethod.Post))
+                    {
+                    @Html.AntiForgeryToken()
+
+                    <div class="mb-4">
+                        <label class="form-label fw-semibold">Email đã đăng ký <span class="text-danger">*</span></label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-light border-end-0"><i class="fas fa-envelope text-muted"></i></span>
+                            <input type="email" name="Email" class="form-control border-start-0" placeholder="VD: nguyenvan@gmail.com" required />
+                        </div>
+                    </div>
+
+                    <div class="d-grid gap-2 mb-4">
+                        <button type="submit" class="btn btn-primary btn-lg fw-bold rounded-3 shadow-sm custom-btn-hover">
+                            <i class="fas fa-paper-plane me-2"></i> GỬI YÊU CẦU
+                        </button>
+                    </div>
+
+                    <div class="text-center">
+                        <a href="@Url.Action("DangNhap", "TaiKhoan")" class="text-decoration-none text-muted fw-semibold">
+                            <i class="fas fa-arrow-left me-1"></i> Quay lại đăng nhập
+                        </a>
+                    </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    /* CSS đồng bộ */
+    .custom-card-shadow {
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+        .custom-card-shadow:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+        }
+
+    .input-group-text {
+        border-color: #ced4da;
+    }
+
+    .form-control:focus {
+        border-color: #86b7fe;
+        box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+    }
+
+    .custom-btn-hover {
+        transition: all 0.3s ease;
+    }
+
+        .custom-btn-hover:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(13, 110, 253, 0.4) !important;
+        }
+</style>
