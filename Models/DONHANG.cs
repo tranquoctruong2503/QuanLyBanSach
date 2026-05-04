@@ -30,6 +30,7 @@ namespace Nhom06_QuanLyBanSah.Models
         public string TinhTrangGiaoHang { get; set; }
         public int UserID { get; set; }
         public string TinhTrangThanhToan { get; set; }
+        public string SoDienThoaGiaoHang { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<CHITIETDONHANG> CHITIETDONHANG { get; set; }
@@ -37,5 +38,6 @@ namespace Nhom06_QuanLyBanSah.Models
         public virtual TAIKHOAN TAIKHOAN { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<HOANTRA> HOANTRA { get; set; }
+        public string SoDienThoaiGiaoHang { get; internal set; }
     }
 }

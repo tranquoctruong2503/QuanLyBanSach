@@ -13,10 +13,10 @@ namespace Nhom06_QuanLyBanSah.Models
     using System.Data.Entity;
     using System.Data.Entity.Infrastructure;
     
-    public partial class QUANLYBANSACH_NHOM06Entities : DbContext
+    public partial class QUANLYBANSACH_NHOM06Entities5 : DbContext
     {
-        public QUANLYBANSACH_NHOM06Entities()
-            : base("name=QUANLYBANSACH_NHOM06Entities")
+        public QUANLYBANSACH_NHOM06Entities5()
+            : base("name=QUANLYBANSACH_NHOM06Entities5")
         {
         }
     
@@ -28,7 +28,6 @@ namespace Nhom06_QuanLyBanSah.Models
         public virtual DbSet<CHITIETDONHANG> CHITIETDONHANG { get; set; }
         public virtual DbSet<CHITIETPHIEUNHAP> CHITIETPHIEUNHAP { get; set; }
         public virtual DbSet<DANHGIA> DANHGIA { get; set; }
-        public virtual DbSet<DONHANG> DONHANG { get; set; }
         public virtual DbSet<DONHANG_VOUCHER> DONHANG_VOUCHER { get; set; }
         public virtual DbSet<HOANTRA> HOANTRA { get; set; }
         public virtual DbSet<NHACUNGCAP> NHACUNGCAP { get; set; }
@@ -41,5 +40,6 @@ namespace Nhom06_QuanLyBanSah.Models
         public virtual DbSet<THELOAI> THELOAI { get; set; }
         public virtual DbSet<VOUCHER> VOUCHER { get; set; }
         public virtual DbSet<YEUTHICH> YEUTHICH { get; set; }
+        public virtual DbSet<DONHANG> DONHANG { get; set; }
     }
 }

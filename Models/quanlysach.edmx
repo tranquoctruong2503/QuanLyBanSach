@@ -4,7 +4,7 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-      <Schema Namespace="QUANLYBANSACH_NHOM06Model.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+    <Schema Namespace="QUANLYBANSACH_NHOM06Model.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
         <EntityType Name="CHITIETDONHANG">
           <Key>
             <PropertyRef Name="MaDonHang" />
@@ -50,6 +50,7 @@
           <Property Name="TinhTrangGiaoHang" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="UserID" Type="int" Nullable="false" />
           <Property Name="TinhTrangThanhToan" Type="nvarchar" MaxLength="50" />
+          <Property Name="SoDienThoaGiaoHang" Type="nvarchar" MaxLength="20" />
         </EntityType>
         <EntityType Name="DONHANG_VOUCHER">
           <Key>
@@ -173,6 +174,7 @@
           <Property Name="NgayKetThuc" Type="datetime" />
           <Property Name="SoLuong" Type="int" />
           <Property Name="TrangThai" Type="bit" />
+          <Property Name="LoaiVoucher" Type="nvarchar" MaxLength="20" />
         </EntityType>
         <EntityType Name="YEUTHICH">
           <Key>
@@ -183,30 +185,6 @@
           <Property Name="MaSach" Type="int" Nullable="false" />
           <Property Name="NgayThem" Type="datetime" />
         </EntityType>
-        <Association Name="FK_CHITIETDONHANG_DONHANG">
-          <End Role="DONHANG" Type="Self.DONHANG" Multiplicity="1" />
-          <End Role="CHITIETDONHANG" Type="Self.CHITIETDONHANG" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="DONHANG">
-              <PropertyRef Name="MaDonHang" />
-            </Principal>
-            <Dependent Role="CHITIETDONHANG">
-              <PropertyRef Name="MaDonHang" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_CHITIETDONHANG_SACH">
-          <End Role="SACH" Type="Self.SACH" Multiplicity="1" />
-          <End Role="CHITIETDONHANG" Type="Self.CHITIETDONHANG" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="SACH">
-              <PropertyRef Name="MaSach" />
-            </Principal>
-            <Dependent Role="CHITIETDONHANG">
-              <PropertyRef Name="MaSach" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <Association Name="FK_CTPN_PHIEUNHAP">
           <End Role="PHIEUNHAP" Type="Self.PHIEUNHAP" Multiplicity="1" />
           <End Role="CHITIETPHIEUNHAP" Type="Self.CHITIETPHIEUNHAP" Multiplicity="*" />
@@ -227,6 +205,30 @@
               <PropertyRef Name="MaSach" />
             </Principal>
             <Dependent Role="CHITIETPHIEUNHAP">
+              <PropertyRef Name="MaSach" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_CHITIETDONHANG_DONHANG">
+          <End Role="DONHANG" Type="Self.DONHANG" Multiplicity="1" />
+          <End Role="CHITIETDONHANG" Type="Self.CHITIETDONHANG" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="DONHANG">
+              <PropertyRef Name="MaDonHang" />
+            </Principal>
+            <Dependent Role="CHITIETDONHANG">
+              <PropertyRef Name="MaDonHang" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_CHITIETDONHANG_SACH">
+          <End Role="SACH" Type="Self.SACH" Multiplicity="1" />
+          <End Role="CHITIETDONHANG" Type="Self.CHITIETDONHANG" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="SACH">
+              <PropertyRef Name="MaSach" />
+            </Principal>
+            <Dependent Role="CHITIETDONHANG">
               <PropertyRef Name="MaSach" />
             </Dependent>
           </ReferentialConstraint>
@@ -416,14 +418,6 @@
           <EntitySet Name="THELOAI" EntityType="Self.THELOAI" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="VOUCHER" EntityType="Self.VOUCHER" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="YEUTHICH" EntityType="Self.YEUTHICH" Schema="dbo" store:Type="Tables" />
-          <AssociationSet Name="FK_CHITIETDONHANG_DONHANG" Association="Self.FK_CHITIETDONHANG_DONHANG">
-            <End Role="DONHANG" EntitySet="DONHANG" />
-            <End Role="CHITIETDONHANG" EntitySet="CHITIETDONHANG" />
-          </AssociationSet>
-          <AssociationSet Name="FK_CHITIETDONHANG_SACH" Association="Self.FK_CHITIETDONHANG_SACH">
-            <End Role="SACH" EntitySet="SACH" />
-            <End Role="CHITIETDONHANG" EntitySet="CHITIETDONHANG" />
-          </AssociationSet>
           <AssociationSet Name="FK_CTPN_PHIEUNHAP" Association="Self.FK_CTPN_PHIEUNHAP">
             <End Role="PHIEUNHAP" EntitySet="PHIEUNHAP" />
             <End Role="CHITIETPHIEUNHAP" EntitySet="CHITIETPHIEUNHAP" />
@@ -431,6 +425,14 @@
           <AssociationSet Name="FK_CTPN_SACH" Association="Self.FK_CTPN_SACH">
             <End Role="SACH" EntitySet="SACH" />
             <End Role="CHITIETPHIEUNHAP" EntitySet="CHITIETPHIEUNHAP" />
+          </AssociationSet>
+          <AssociationSet Name="FK_CHITIETDONHANG_DONHANG" Association="Self.FK_CHITIETDONHANG_DONHANG">
+            <End Role="DONHANG" EntitySet="DONHANG" />
+            <End Role="CHITIETDONHANG" EntitySet="CHITIETDONHANG" />
+          </AssociationSet>
+          <AssociationSet Name="FK_CHITIETDONHANG_SACH" Association="Self.FK_CHITIETDONHANG_SACH">
+            <End Role="SACH" EntitySet="SACH" />
+            <End Role="CHITIETDONHANG" EntitySet="CHITIETDONHANG" />
           </AssociationSet>
           <AssociationSet Name="FK_DG_SACH" Association="Self.FK_DG_SACH">
             <End Role="SACH" EntitySet="SACH" />
@@ -489,8 +491,7 @@
             <End Role="YEUTHICH" EntitySet="YEUTHICH" />
           </AssociationSet>
         </EntityContainer>
-      </Schema>
-    </edmx:StorageModels>
+      </Schema></edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="QUANLYBANSACH_NHOM06Model" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
@@ -503,8 +504,8 @@
           <Property Name="MaSach" Type="Int32" Nullable="false" />
           <Property Name="SoLuong" Type="Int32" />
           <Property Name="GiaBanTaiThoiDiem" Type="Decimal" Precision="18" Scale="0" />
-          <NavigationProperty Name="DONHANG" Relationship="Self.FK_CHITIETDONHANG_DONHANG" FromRole="CHITIETDONHANG" ToRole="DONHANG" />
           <NavigationProperty Name="SACH" Relationship="Self.FK_CHITIETDONHANG_SACH" FromRole="CHITIETDONHANG" ToRole="SACH" />
+          <NavigationProperty Name="DONHANG" Relationship="QUANLYBANSACH_NHOM06Model.FK_CHITIETDONHANG_DONHANG" FromRole="CHITIETDONHANG" ToRole="DONHANG" />
         </EntityType>
         <EntityType Name="CHITIETPHIEUNHAP">
           <Key>
@@ -532,24 +533,6 @@
           <NavigationProperty Name="SACH" Relationship="Self.FK_DG_SACH" FromRole="DANHGIA" ToRole="SACH" />
           <NavigationProperty Name="TAIKHOAN" Relationship="Self.FK_DG_USER" FromRole="DANHGIA" ToRole="TAIKHOAN" />
         </EntityType>
-        <EntityType Name="DONHANG">
-          <Key>
-            <PropertyRef Name="MaDonHang" />
-          </Key>
-          <Property Name="MaDonHang" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="NgayGiaoHang" Type="DateTime" Precision="3" />
-          <Property Name="NgayDatHang" Type="DateTime" Precision="3" />
-          <Property Name="TongTien" Type="Decimal" Precision="18" Scale="0" Nullable="false" />
-          <Property Name="DiaChiGiaoHang" Type="String" MaxLength="255" FixedLength="false" Unicode="true" Nullable="false" />
-          <Property Name="PhuongThucThanhToan" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="TinhTrangGiaoHang" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
-          <Property Name="UserID" Type="Int32" Nullable="false" />
-          <Property Name="TinhTrangThanhToan" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <NavigationProperty Name="CHITIETDONHANG" Relationship="Self.FK_CHITIETDONHANG_DONHANG" FromRole="DONHANG" ToRole="CHITIETDONHANG" />
-          <NavigationProperty Name="DONHANG_VOUCHER" Relationship="Self.FK_DHV_DONHANG" FromRole="DONHANG" ToRole="DONHANG_VOUCHER" />
-          <NavigationProperty Name="TAIKHOAN" Relationship="Self.FK_DONHANG_TAIKHOAN" FromRole="DONHANG" ToRole="TAIKHOAN" />
-          <NavigationProperty Name="HOANTRA" Relationship="Self.FK_HT_DONHANG" FromRole="DONHANG" ToRole="HOANTRA" />
-        </EntityType>
         <EntityType Name="DONHANG_VOUCHER">
           <Key>
             <PropertyRef Name="MaDonHang" />
@@ -557,8 +540,8 @@
           <Property Name="MaDonHang" Type="Int32" Nullable="false" />
           <Property Name="MaVoucher" Type="Int32" Nullable="false" />
           <Property Name="SoTienGiam" Type="Decimal" Precision="18" Scale="0" />
-          <NavigationProperty Name="DONHANG" Relationship="Self.FK_DHV_DONHANG" FromRole="DONHANG_VOUCHER" ToRole="DONHANG" />
           <NavigationProperty Name="VOUCHER" Relationship="Self.FK_DHV_VOUCHER" FromRole="DONHANG_VOUCHER" ToRole="VOUCHER" />
+          <NavigationProperty Name="DONHANG" Relationship="QUANLYBANSACH_NHOM06Model.FK_DHV_DONHANG" FromRole="DONHANG_VOUCHER" ToRole="DONHANG" />
         </EntityType>
         <EntityType Name="HOANTRA">
           <Key>
@@ -569,7 +552,7 @@
           <Property Name="LyDo" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="TrangThai" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="NgayYeuCau" Type="DateTime" Precision="3" />
-          <NavigationProperty Name="DONHANG" Relationship="Self.FK_HT_DONHANG" FromRole="HOANTRA" ToRole="DONHANG" />
+          <NavigationProperty Name="DONHANG" Relationship="QUANLYBANSACH_NHOM06Model.FK_HT_DONHANG" FromRole="HOANTRA" ToRole="DONHANG" />
         </EntityType>
         <EntityType Name="NHACUNGCAP">
           <Key>
@@ -660,10 +643,10 @@
           <Property Name="NgayTao" Type="DateTime" Precision="3" />
           <Property Name="NgayCapNhat" Type="DateTime" Precision="3" />
           <NavigationProperty Name="DANHGIA" Relationship="Self.FK_DG_USER" FromRole="TAIKHOAN" ToRole="DANHGIA" />
-          <NavigationProperty Name="DONHANG" Relationship="Self.FK_DONHANG_TAIKHOAN" FromRole="TAIKHOAN" ToRole="DONHANG" />
           <NavigationProperty Name="PHIEUNHAP" Relationship="Self.FK_PN_TAIKHOAN" FromRole="TAIKHOAN" ToRole="PHIEUNHAP" />
           <NavigationProperty Name="THANHVIEN" Relationship="Self.FK_TV_USER" FromRole="TAIKHOAN" ToRole="THANHVIEN" />
           <NavigationProperty Name="YEUTHICH" Relationship="Self.FK_YT_USER" FromRole="TAIKHOAN" ToRole="YEUTHICH" />
+          <NavigationProperty Name="DONHANG" Relationship="QUANLYBANSACH_NHOM06Model.FK_DONHANG_TAIKHOAN" FromRole="TAIKHOAN" ToRole="DONHANG" />
         </EntityType>
         <EntityType Name="THANHVIEN">
           <Key>
@@ -696,6 +679,7 @@
           <Property Name="SoLuong" Type="Int32" />
           <Property Name="TrangThai" Type="Boolean" />
           <NavigationProperty Name="DONHANG_VOUCHER" Relationship="Self.FK_DHV_VOUCHER" FromRole="VOUCHER" ToRole="DONHANG_VOUCHER" />
+          <Property Name="LoaiVoucher" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="YEUTHICH">
           <Key>
@@ -708,18 +692,6 @@
           <NavigationProperty Name="SACH" Relationship="Self.FK_YT_SACH" FromRole="YEUTHICH" ToRole="SACH" />
           <NavigationProperty Name="TAIKHOAN" Relationship="Self.FK_YT_USER" FromRole="YEUTHICH" ToRole="TAIKHOAN" />
         </EntityType>
-        <Association Name="FK_CHITIETDONHANG_DONHANG">
-          <End Role="DONHANG" Type="Self.DONHANG" Multiplicity="1" />
-          <End Role="CHITIETDONHANG" Type="Self.CHITIETDONHANG" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="DONHANG">
-              <PropertyRef Name="MaDonHang" />
-            </Principal>
-            <Dependent Role="CHITIETDONHANG">
-              <PropertyRef Name="MaDonHang" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <Association Name="FK_CHITIETDONHANG_SACH">
           <End Role="SACH" Type="Self.SACH" Multiplicity="1" />
           <End Role="CHITIETDONHANG" Type="Self.CHITIETDONHANG" Multiplicity="*" />
@@ -777,42 +749,6 @@
             </Principal>
             <Dependent Role="DANHGIA">
               <PropertyRef Name="UserID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_DHV_DONHANG">
-          <End Role="DONHANG" Type="Self.DONHANG" Multiplicity="1" />
-          <End Role="DONHANG_VOUCHER" Type="Self.DONHANG_VOUCHER" Multiplicity="0..1" />
-          <ReferentialConstraint>
-            <Principal Role="DONHANG">
-              <PropertyRef Name="MaDonHang" />
-            </Principal>
-            <Dependent Role="DONHANG_VOUCHER">
-              <PropertyRef Name="MaDonHang" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_DONHANG_TAIKHOAN">
-          <End Role="TAIKHOAN" Type="Self.TAIKHOAN" Multiplicity="1" />
-          <End Role="DONHANG" Type="Self.DONHANG" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="TAIKHOAN">
-              <PropertyRef Name="userID" />
-            </Principal>
-            <Dependent Role="DONHANG">
-              <PropertyRef Name="UserID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_HT_DONHANG">
-          <End Role="DONHANG" Type="Self.DONHANG" Multiplicity="0..1" />
-          <End Role="HOANTRA" Type="Self.HOANTRA" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="DONHANG">
-              <PropertyRef Name="MaDonHang" />
-            </Principal>
-            <Dependent Role="HOANTRA">
-              <PropertyRef Name="MaDonHang" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -928,7 +864,6 @@
           <EntitySet Name="CHITIETDONHANG" EntityType="Self.CHITIETDONHANG" />
           <EntitySet Name="CHITIETPHIEUNHAP" EntityType="Self.CHITIETPHIEUNHAP" />
           <EntitySet Name="DANHGIA" EntityType="Self.DANHGIA" />
-          <EntitySet Name="DONHANG" EntityType="Self.DONHANG" />
           <EntitySet Name="DONHANG_VOUCHER" EntityType="Self.DONHANG_VOUCHER" />
           <EntitySet Name="HOANTRA" EntityType="Self.HOANTRA" />
           <EntitySet Name="NHACUNGCAP" EntityType="Self.NHACUNGCAP" />
@@ -941,10 +876,6 @@
           <EntitySet Name="THELOAI" EntityType="Self.THELOAI" />
           <EntitySet Name="VOUCHER" EntityType="Self.VOUCHER" />
           <EntitySet Name="YEUTHICH" EntityType="Self.YEUTHICH" />
-          <AssociationSet Name="FK_CHITIETDONHANG_DONHANG" Association="Self.FK_CHITIETDONHANG_DONHANG">
-            <End Role="DONHANG" EntitySet="DONHANG" />
-            <End Role="CHITIETDONHANG" EntitySet="CHITIETDONHANG" />
-          </AssociationSet>
           <AssociationSet Name="FK_CHITIETDONHANG_SACH" Association="Self.FK_CHITIETDONHANG_SACH">
             <End Role="SACH" EntitySet="SACH" />
             <End Role="CHITIETDONHANG" EntitySet="CHITIETDONHANG" />
@@ -964,18 +895,6 @@
           <AssociationSet Name="FK_DG_USER" Association="Self.FK_DG_USER">
             <End Role="TAIKHOAN" EntitySet="TAIKHOAN" />
             <End Role="DANHGIA" EntitySet="DANHGIA" />
-          </AssociationSet>
-          <AssociationSet Name="FK_DHV_DONHANG" Association="Self.FK_DHV_DONHANG">
-            <End Role="DONHANG" EntitySet="DONHANG" />
-            <End Role="DONHANG_VOUCHER" EntitySet="DONHANG_VOUCHER" />
-          </AssociationSet>
-          <AssociationSet Name="FK_DONHANG_TAIKHOAN" Association="Self.FK_DONHANG_TAIKHOAN">
-            <End Role="TAIKHOAN" EntitySet="TAIKHOAN" />
-            <End Role="DONHANG" EntitySet="DONHANG" />
-          </AssociationSet>
-          <AssociationSet Name="FK_HT_DONHANG" Association="Self.FK_HT_DONHANG">
-            <End Role="DONHANG" EntitySet="DONHANG" />
-            <End Role="HOANTRA" EntitySet="HOANTRA" />
           </AssociationSet>
           <AssociationSet Name="FK_DHV_VOUCHER" Association="Self.FK_DHV_VOUCHER">
             <End Role="VOUCHER" EntitySet="VOUCHER" />
@@ -1013,7 +932,91 @@
             <End Role="TAIKHOAN" EntitySet="TAIKHOAN" />
             <End Role="YEUTHICH" EntitySet="YEUTHICH" />
           </AssociationSet>
+          <EntitySet Name="DONHANG" EntityType="QUANLYBANSACH_NHOM06Model.DONHANG" />
+          <AssociationSet Name="FK_CHITIETDONHANG_DONHANG" Association="QUANLYBANSACH_NHOM06Model.FK_CHITIETDONHANG_DONHANG">
+            <End Role="DONHANG" EntitySet="DONHANG" />
+            <End Role="CHITIETDONHANG" EntitySet="CHITIETDONHANG" />
+          </AssociationSet>
+          <AssociationSet Name="FK_DHV_DONHANG" Association="QUANLYBANSACH_NHOM06Model.FK_DHV_DONHANG">
+            <End Role="DONHANG" EntitySet="DONHANG" />
+            <End Role="DONHANG_VOUCHER" EntitySet="DONHANG_VOUCHER" />
+          </AssociationSet>
+          <AssociationSet Name="FK_DONHANG_TAIKHOAN" Association="QUANLYBANSACH_NHOM06Model.FK_DONHANG_TAIKHOAN">
+            <End Role="TAIKHOAN" EntitySet="TAIKHOAN" />
+            <End Role="DONHANG" EntitySet="DONHANG" />
+          </AssociationSet>
+          <AssociationSet Name="FK_HT_DONHANG" Association="QUANLYBANSACH_NHOM06Model.FK_HT_DONHANG">
+            <End Role="DONHANG" EntitySet="DONHANG" />
+            <End Role="HOANTRA" EntitySet="HOANTRA" />
+          </AssociationSet>
         </EntityContainer>
+        <EntityType Name="DONHANG">
+          <Key>
+            <PropertyRef Name="MaDonHang" />
+          </Key>
+          <Property Name="MaDonHang" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="NgayGiaoHang" Type="DateTime" Precision="3" />
+          <Property Name="NgayDatHang" Type="DateTime" Precision="3" />
+          <Property Name="TongTien" Type="Decimal" Nullable="false" Precision="18" Scale="0" />
+          <Property Name="DiaChiGiaoHang" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="PhuongThucThanhToan" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="TinhTrangGiaoHang" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="UserID" Type="Int32" Nullable="false" />
+          <Property Name="TinhTrangThanhToan" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="SoDienThoaGiaoHang" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="CHITIETDONHANG" Relationship="QUANLYBANSACH_NHOM06Model.FK_CHITIETDONHANG_DONHANG" FromRole="DONHANG" ToRole="CHITIETDONHANG" />
+          <NavigationProperty Name="DONHANG_VOUCHER" Relationship="QUANLYBANSACH_NHOM06Model.FK_DHV_DONHANG" FromRole="DONHANG" ToRole="DONHANG_VOUCHER" />
+          <NavigationProperty Name="TAIKHOAN" Relationship="QUANLYBANSACH_NHOM06Model.FK_DONHANG_TAIKHOAN" FromRole="DONHANG" ToRole="TAIKHOAN" />
+          <NavigationProperty Name="HOANTRA" Relationship="QUANLYBANSACH_NHOM06Model.FK_HT_DONHANG" FromRole="DONHANG" ToRole="HOANTRA" />
+        </EntityType>
+        <Association Name="FK_CHITIETDONHANG_DONHANG">
+          <End Type="QUANLYBANSACH_NHOM06Model.DONHANG" Role="DONHANG" Multiplicity="1" />
+          <End Type="QUANLYBANSACH_NHOM06Model.CHITIETDONHANG" Role="CHITIETDONHANG" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="DONHANG">
+              <PropertyRef Name="MaDonHang" />
+            </Principal>
+            <Dependent Role="CHITIETDONHANG">
+              <PropertyRef Name="MaDonHang" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_DHV_DONHANG">
+          <End Type="QUANLYBANSACH_NHOM06Model.DONHANG" Role="DONHANG" Multiplicity="1" />
+          <End Type="QUANLYBANSACH_NHOM06Model.DONHANG_VOUCHER" Role="DONHANG_VOUCHER" Multiplicity="0..1" />
+          <ReferentialConstraint>
+            <Principal Role="DONHANG">
+              <PropertyRef Name="MaDonHang" />
+            </Principal>
+            <Dependent Role="DONHANG_VOUCHER">
+              <PropertyRef Name="MaDonHang" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_DONHANG_TAIKHOAN">
+          <End Type="QUANLYBANSACH_NHOM06Model.TAIKHOAN" Role="TAIKHOAN" Multiplicity="1" />
+          <End Type="QUANLYBANSACH_NHOM06Model.DONHANG" Role="DONHANG" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="TAIKHOAN">
+              <PropertyRef Name="userID" />
+            </Principal>
+            <Dependent Role="DONHANG">
+              <PropertyRef Name="UserID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_HT_DONHANG">
+          <End Type="QUANLYBANSACH_NHOM06Model.DONHANG" Role="DONHANG" Multiplicity="0..1" />
+          <End Type="QUANLYBANSACH_NHOM06Model.HOANTRA" Role="HOANTRA" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="DONHANG">
+              <PropertyRef Name="MaDonHang" />
+            </Principal>
+            <Dependent Role="HOANTRA">
+              <PropertyRef Name="MaDonHang" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -1050,21 +1053,6 @@
                 <ScalarProperty Name="SoSao" ColumnName="SoSao" />
                 <ScalarProperty Name="NoiDung" ColumnName="NoiDung" />
                 <ScalarProperty Name="NgayDanhGia" ColumnName="NgayDanhGia" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="DONHANG">
-            <EntityTypeMapping TypeName="QUANLYBANSACH_NHOM06Model.DONHANG">
-              <MappingFragment StoreEntitySet="DONHANG">
-                <ScalarProperty Name="MaDonHang" ColumnName="MaDonHang" />
-                <ScalarProperty Name="NgayGiaoHang" ColumnName="NgayGiaoHang" />
-                <ScalarProperty Name="NgayDatHang" ColumnName="NgayDatHang" />
-                <ScalarProperty Name="TongTien" ColumnName="TongTien" />
-                <ScalarProperty Name="DiaChiGiaoHang" ColumnName="DiaChiGiaoHang" />
-                <ScalarProperty Name="PhuongThucThanhToan" ColumnName="PhuongThucThanhToan" />
-                <ScalarProperty Name="TinhTrangGiaoHang" ColumnName="TinhTrangGiaoHang" />
-                <ScalarProperty Name="UserID" ColumnName="UserID" />
-                <ScalarProperty Name="TinhTrangThanhToan" ColumnName="TinhTrangThanhToan" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -1190,6 +1178,7 @@
           <EntitySetMapping Name="VOUCHER">
             <EntityTypeMapping TypeName="QUANLYBANSACH_NHOM06Model.VOUCHER">
               <MappingFragment StoreEntitySet="VOUCHER">
+                <ScalarProperty Name="LoaiVoucher" ColumnName="LoaiVoucher" />
                 <ScalarProperty Name="MaVoucher" ColumnName="MaVoucher" />
                 <ScalarProperty Name="CodeVoucher" ColumnName="CodeVoucher" />
                 <ScalarProperty Name="GiaTriGiam" ColumnName="GiaTriGiam" />
@@ -1208,6 +1197,22 @@
                 <ScalarProperty Name="UserID" ColumnName="UserID" />
                 <ScalarProperty Name="MaSach" ColumnName="MaSach" />
                 <ScalarProperty Name="NgayThem" ColumnName="NgayThem" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="DONHANG">
+            <EntityTypeMapping TypeName="QUANLYBANSACH_NHOM06Model.DONHANG">
+              <MappingFragment StoreEntitySet="DONHANG">
+                <ScalarProperty Name="SoDienThoaGiaoHang" ColumnName="SoDienThoaGiaoHang" />
+                <ScalarProperty Name="TinhTrangThanhToan" ColumnName="TinhTrangThanhToan" />
+                <ScalarProperty Name="UserID" ColumnName="UserID" />
+                <ScalarProperty Name="TinhTrangGiaoHang" ColumnName="TinhTrangGiaoHang" />
+                <ScalarProperty Name="PhuongThucThanhToan" ColumnName="PhuongThucThanhToan" />
+                <ScalarProperty Name="DiaChiGiaoHang" ColumnName="DiaChiGiaoHang" />
+                <ScalarProperty Name="TongTien" ColumnName="TongTien" />
+                <ScalarProperty Name="NgayDatHang" ColumnName="NgayDatHang" />
+                <ScalarProperty Name="NgayGiaoHang" ColumnName="NgayGiaoHang" />
+                <ScalarProperty Name="MaDonHang" ColumnName="MaDonHang" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

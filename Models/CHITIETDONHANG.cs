@@ -19,7 +19,7 @@ namespace Nhom06_QuanLyBanSah.Models
         public Nullable<int> SoLuong { get; set; }
         public Nullable<decimal> GiaBanTaiThoiDiem { get; set; }
     
-        public virtual DONHANG DONHANG { get; set; }
         public virtual SACH SACH { get; set; }
+        public virtual DONHANG DONHANG { get; set; }
     }
 }

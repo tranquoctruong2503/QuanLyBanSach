@@ -18,7 +18,7 @@ namespace Nhom06_QuanLyBanSah.Models
         public int MaVoucher { get; set; }
         public Nullable<decimal> SoTienGiam { get; set; }
     
-        public virtual DONHANG DONHANG { get; set; }
         public virtual VOUCHER VOUCHER { get; set; }
+        public virtual DONHANG DONHANG { get; set; }
     }
 }

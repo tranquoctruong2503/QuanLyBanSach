@@ -29,6 +29,7 @@ namespace Nhom06_QuanLyBanSah.Models
         public Nullable<System.DateTime> NgayKetThuc { get; set; }
         public Nullable<int> SoLuong { get; set; }
         public Nullable<bool> TrangThai { get; set; }
+        public string LoaiVoucher { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<DONHANG_VOUCHER> DONHANG_VOUCHER { get; set; }

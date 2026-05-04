@@ -18,9 +18,9 @@ namespace Nhom06_QuanLyBanSah.Models
         public TAIKHOAN()
         {
             this.DANHGIA = new HashSet<DANHGIA>();
-            this.DONHANG = new HashSet<DONHANG>();
             this.PHIEUNHAP = new HashSet<PHIEUNHAP>();
             this.YEUTHICH = new HashSet<YEUTHICH>();
+            this.DONHANG = new HashSet<DONHANG>();
         }
     
         public int userID { get; set; }
@@ -38,11 +38,11 @@ namespace Nhom06_QuanLyBanSah.Models
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<DANHGIA> DANHGIA { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<DONHANG> DONHANG { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<PHIEUNHAP> PHIEUNHAP { get; set; }
         public virtual THANHVIEN THANHVIEN { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<YEUTHICH> YEUTHICH { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<DONHANG> DONHANG { get; set; }
     }
 }

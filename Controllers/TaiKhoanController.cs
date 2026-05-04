@@ -13,7 +13,7 @@ namespace Nhom06_QuanLyBanSah.Controllers
 {
     public class TaiKhoanController : Controller
     {
-        QUANLYBANSACH_NHOM06Entities db = new QUANLYBANSACH_NHOM06Entities();
+        QUANLYBANSACH_NHOM06Entities5 db = new QUANLYBANSACH_NHOM06Entities5();
 
         //Đăng ký
         [HttpGet]
@@ -311,7 +311,7 @@ namespace Nhom06_QuanLyBanSah.Controllers
 
                 const string senderAppPassword = "uvqe ojjg bwgp fbnu";
 
-                const string subject = "Khôi phục mật khẩu - Nhà Sách Quốc Trường";
+                const string subject = "Khôi phục mật khẩu - Alpha Book";
                 string body = $@"
             <h3>Thông báo cấp lại mật khẩu</h3>
             <p>Chào bạn,</p>
